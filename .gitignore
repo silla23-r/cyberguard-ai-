@@ -1,0 +1,36 @@
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/__pycache__/
+backend/*/__pycache__/
+backend/*/*/__pycache__/
+
+# Environments and Secrets
+.env
+backend/.env
+frontend/.env.local
+frontend/.env.production.local
+frontend/.env
+
+# Uploads & Temp outputs
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/static/reports/*.pdf
+backend/static/audio/*.mp3
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
