@@ -16,7 +16,10 @@ from pathlib import Path
 from typing import Optional
 from xml.sax.saxutils import escape as xml_escape
 
-import qrcode
+try:
+    import qrcode
+except ImportError:
+    qrcode = None
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -219,11 +222,16 @@ def generate_evidence_pdf(
 
     # 6. Section 65B Certificate & Verification QR Box
     verify_url = verdict.verification_url or f"http://localhost:8000/api/verify/{sha_hash}"
-    qr_img = qrcode.make(verify_url)
-    img_buffer = io.BytesIO()
-    qr_img.save(img_buffer, format="PNG")
-    img_buffer.seek(0)
-    rl_qr = ReportLabImage(img_buffer, width=65, height=65)
+    rl_qr = Paragraph("", cert_style)
+    if qrcode is not None:
+        try:
+            qr_img = qrcode.make(verify_url)
+            img_buffer = io.BytesIO()
+            qr_img.save(img_buffer, format="PNG")
+            img_buffer.seek(0)
+            rl_qr = ReportLabImage(img_buffer, width=65, height=65)
+        except Exception as e:
+            logger.warning(f"Could not generate QR image: {e}")
 
     cert_text = (
         "<b>CERTIFICATE OF ELECTRONIC EVIDENCE UNDER SECTION 65B INDIAN EVIDENCE ACT, 1872 & BHARATIYA SAKSHYA ADHINIYAM, 2023:</b><br/>"
