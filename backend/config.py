@@ -2,8 +2,10 @@
 Configuration settings for CyberGuard AI Backend.
 Loads environment variables with robust defaults for demo/offline execution.
 """
+import json
 from pathlib import Path
-from typing import List
+from typing import List, Union
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -32,12 +34,27 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     ENVIRONMENT: str = "development"
-    CORS_ORIGINS: List[str] = [
+    CORS_ORIGINS: Union[List[str], str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:8000",
         "http://127.0.0.1:8000"
     ]
+
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            v = v.strip()
+            if v.startswith("[") and v.endswith("]"):
+                try:
+                    return json.loads(v)
+                except Exception:
+                    pass
+            if "," in v:
+                return [item.strip() for item in v.split(",") if item.strip()]
+            return [v] if v else ["*"]
+        return v
 
     # Directories
     UPLOAD_DIR: Path = BASE_DIR / "uploads"
