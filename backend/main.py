@@ -62,7 +62,10 @@ async def root():
     }
 
 if __name__ == "__main__":
+    import sys
     import uvicorn
-    print(f"🚀 Starting CyberGuard AI Server on http://{settings.HOST}:{settings.PORT}")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    print(f"[+] Starting CyberGuard AI Server on http://{settings.HOST}:{settings.PORT}")
     uvicorn.run("main:app", host=settings.HOST, port=settings.PORT, reload=True)
 

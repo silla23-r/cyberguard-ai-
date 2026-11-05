@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 > nul
 title CyberGuard AI Launcher
 color 0B
 echo ================================================================

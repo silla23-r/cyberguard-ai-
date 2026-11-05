@@ -56,6 +56,10 @@ export default function Home() {
           onAnalyze={handleAnalyze}
           isLoading={isLoading}
           selectedLang={currentLang}
+          onAnalysisResult={(data) => {
+            setAnalysisResult(data);
+            setTimelineSteps(data.steps || []);
+          }}
         />
 
         {timelineSteps.length > 0 && <AgentTimeline steps={timelineSteps} />}

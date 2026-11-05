@@ -58,3 +58,57 @@ export async function analyzeSubmission(formData: FormData): Promise<AnalysisRes
 
   return data;
 }
+
+export interface WhatsAppSimulateResponse {
+  simulator_status: string;
+  sender: string;
+  incoming_message: string;
+  whatsapp_rendered_reply: string;
+  verdict?: any;
+  evidence?: any;
+  report_pdf_url?: string | null;
+  audio_advisory_url?: string | null;
+  steps?: any[];
+}
+
+export async function simulateWhatsAppMessage(
+  message: string,
+  language: string = "en"
+): Promise<WhatsAppSimulateResponse> {
+  const rawBackend = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendBase = rawBackend ? rawBackend.replace(/\/+$/, "") : "";
+  const endpoint = backendBase ? `${backendBase}/api/whatsapp/simulate` : "/api/whatsapp/simulate";
+
+  let response: Response;
+  try {
+    response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sender: "whatsapp:+919876543210",
+        message,
+        language,
+      }),
+    });
+  } catch (netErr: unknown) {
+    const msg = netErr instanceof Error ? netErr.message : String(netErr);
+    throw new Error(`Cannot connect to WhatsApp Bot endpoint (${msg}).`);
+  }
+
+  if (!response.ok) {
+    throw new Error(`WhatsApp simulation failed: status ${response.status}`);
+  }
+
+  const data: WhatsAppSimulateResponse = await response.json();
+
+  if (backendBase) {
+    if (data.report_pdf_url && data.report_pdf_url.startsWith("/")) {
+      data.report_pdf_url = `${backendBase}${data.report_pdf_url}`;
+    }
+    if (data.audio_advisory_url && data.audio_advisory_url.startsWith("/")) {
+      data.audio_advisory_url = `${backendBase}${data.audio_advisory_url}`;
+    }
+  }
+
+  return data;
+}
