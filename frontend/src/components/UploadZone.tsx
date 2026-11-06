@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send } from "lucide-react";
-import { simulateWhatsAppMessage } from "@/lib/api";
+import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send, ShieldAlert, ShieldCheck, UserX } from "lucide-react";
+import { simulateWhatsAppMessage, blockWhatsAppFraudster } from "@/lib/api";
 import { AnalysisResponse } from "@/lib/types";
 
 interface UploadZoneProps {
@@ -27,7 +27,23 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
   // WhatsApp Simulator State
   const [waInput, setWaInput] = useState("");
   const [waSending, setWaSending] = useState(false);
-  const [waChat, setWaChat] = useState<{ userText: string; botReply: string } | null>(null);
+  const [waChat, setWaChat] = useState<{ userText: string; botReply: string; isDanger: boolean } | null>(null);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blocking, setBlocking] = useState(false);
+
+  const handleBlockFraudster = async () => {
+    if (!waChat) return;
+    setBlocking(true);
+    try {
+      await blockWhatsAppFraudster("whatsapp:+919876543210", waChat.userText);
+      setIsBlocked(true);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      alert("Block action error: " + msg);
+    } finally {
+      setBlocking(false);
+    }
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
@@ -53,12 +69,15 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       return;
     }
 
+    setIsBlocked(false);
     setWaSending(true);
     try {
       const res = await simulateWhatsAppMessage(waInput.trim(), selectedLang);
+      const isDanger = (res.verdict?.risk_score || 0) >= 40 || res.verdict?.severity === "DANGER";
       setWaChat({
         userText: waInput.trim(),
         botReply: res.whatsapp_rendered_reply || "Threat analysis completed.",
+        isDanger,
       });
 
       if (onAnalysisResult && res.verdict) {
@@ -312,6 +331,44 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
                   </pre>
                 </div>
               </div>
+
+              {/* 1-Tap Block Fraudster Action if High Risk */}
+              {waChat.isDanger && !isBlocked && (
+                <div className="p-3.5 bg-red-950/60 border border-red-500/50 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-red-950/50">
+                  <div className="flex items-center gap-2.5">
+                    <ShieldAlert className="w-5 h-5 text-red-400 shrink-0 animate-pulse" />
+                    <div>
+                      <p className="text-xs font-bold text-red-300">CRITICAL EXTORTION / FRAUD DETECTED</p>
+                      <p className="text-[11px] text-red-200/80">Break scammer psychological pressure loop & freeze contact</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleBlockFraudster}
+                    disabled={blocking}
+                    className="w-full sm:w-auto px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 transition shrink-0 cursor-pointer disabled:opacity-50"
+                  >
+                    {blocking ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>BLOCKING SENDER...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserX className="w-3.5 h-3.5" />
+                        <span>1-TAP PERMANENT BLOCK & CERTIFY 1930 REPORT</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {isBlocked && (
+                <div className="p-3.5 bg-emerald-950/60 border border-emerald-500/50 rounded-xl flex items-center gap-2.5 text-xs text-emerald-300 font-semibold shadow-lg shadow-emerald-950/50">
+                  <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span>⛔ SENDER PERMANENTLY BLOCKED. Notifications muted & official Section 65B tamper-proof 1930 Cybercrime dossier compiled.</span>
+                </div>
+              )}
             </div>
           )}
         </div>

@@ -128,3 +128,21 @@ async def simulate_whatsapp_bot(request: WhatsAppSimulateRequest):
         "steps": result.get("steps")
     }
 
+class WhatsAppBlockRequest(BaseModel):
+    sender: str
+    incident_summary: Optional[str] = "Confirmed fraudulent scam intimidation"
+
+@router.post("/block")
+async def block_fraudster_endpoint(req: WhatsAppBlockRequest):
+    """
+    Executes a permanent block on a scammer number and registers Section 65B evidence seal.
+    """
+    import json
+    from mcp_server.server import confirm_block_and_report
+    res_str = await confirm_block_and_report(
+        sender_jid=req.sender,
+        incident_summary=req.incident_summary or "Confirmed fraudulent scam intimidation",
+        file_1930_dossier=True
+    )
+    return json.loads(res_str)
+

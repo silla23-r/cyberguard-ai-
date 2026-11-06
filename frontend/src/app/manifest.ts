@@ -1,0 +1,28 @@
+import type { MetadataRoute } from "next";
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: "CyberGuard AI — Fraud & Scam Defense",
+    short_name: "CyberGuard",
+    description: "Real-time AI protection against Digital Arrest, UPI scams, and financial extortion.",
+    start_url: "/",
+    display: "standalone",
+    orientation: "portrait",
+    background_color: "#0B1120",
+    theme_color: "#0B1120",
+    icons: [
+      {
+        src: "https://cdn-icons-png.flaticon.com/512/1067/1067256.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable",
+      },
+      {
+        src: "https://cdn-icons-png.flaticon.com/512/1067/1067256.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable",
+      },
+    ],
+  };
+}

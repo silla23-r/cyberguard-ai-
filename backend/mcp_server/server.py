@@ -318,5 +318,7 @@ async def security_status_resource() -> str:
 
 
 if __name__ == "__main__":
-    print(f"🚀 Launching CyberGuard WhatsApp MCP Server via stdio...")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")
+    sys.stderr.write("[+] Launching CyberGuard WhatsApp MCP Server via stdio...\n")
     app.run()

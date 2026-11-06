@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "cyberguard-whatsapp": {
+      "command": "python",
+      "args": [
+        "backend/mcp_server/server.py"
+      ],
+      "env": {
+        "PYTHONIOENCODING": "utf-8"
+      }
+    }
+  }
+}
+

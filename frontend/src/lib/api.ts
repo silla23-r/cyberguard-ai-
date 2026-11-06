@@ -112,3 +112,24 @@ export async function simulateWhatsAppMessage(
 
   return data;
 }
+
+export async function blockWhatsAppFraudster(sender: string, summary: string) {
+  const rawBackend = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendBase = rawBackend ? rawBackend.replace(/\/+$/, "") : "";
+  const endpoint = backendBase ? `${backendBase}/api/whatsapp/block` : "/api/whatsapp/block";
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      sender,
+      incident_summary: summary,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to block fraudster: status ${response.status}`);
+  }
+
+  return response.json();
+}
