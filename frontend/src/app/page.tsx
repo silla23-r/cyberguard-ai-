@@ -50,7 +50,7 @@ export default function Home() {
       <Header currentLang={currentLang} onLangChange={setCurrentLang} />
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
-        <HeroSection />
+        <HeroSection currentLang={currentLang} />
 
         <UploadZone
           onAnalyze={handleAnalyze}
@@ -70,20 +70,22 @@ export default function Home() {
               verdict={analysisResult.verdict}
               reportPdfUrl={analysisResult.report_pdf_url}
               audioAdvisoryUrl={analysisResult.audio_advisory_url}
+              currentLang={currentLang}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <EvidencePanel
                 verdict={analysisResult.verdict}
                 evidence={analysisResult.evidence}
+                currentLang={currentLang}
               />
-              <ActionPanel verdict={analysisResult.verdict} />
+              <ActionPanel verdict={analysisResult.verdict} currentLang={currentLang} />
             </div>
           </section>
         )}
       </main>
 
-      <Footer />
+      <Footer currentLang={currentLang} />
     </div>
   );
 }

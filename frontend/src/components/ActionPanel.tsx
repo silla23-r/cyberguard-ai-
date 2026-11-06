@@ -3,17 +3,21 @@
 import React from "react";
 import { ShieldCheck, CheckSquare, AlertOctagon } from "lucide-react";
 import { RiskVerdict } from "@/lib/types";
+import { getTranslation } from "@/lib/translations";
 
 interface ActionPanelProps {
   verdict: RiskVerdict;
+  currentLang?: string;
 }
 
-export const ActionPanel: React.FC<ActionPanelProps> = ({ verdict }) => {
+export const ActionPanel: React.FC<ActionPanelProps> = ({ verdict, currentLang = "en" }) => {
+  const t = getTranslation(currentLang);
+
   return (
     <div className="bg-guard-800 rounded-2xl border border-guard-700 p-6 space-y-4">
       <h4 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
         <ShieldCheck className="w-4 h-4 text-green-400" />
-        <span>Immediate Protective Actions</span>
+        <span>{t.actions.actionsHeading}</span>
       </h4>
 
       <ul className="space-y-2 text-sm text-slate-300">
@@ -29,13 +33,13 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ verdict }) => {
       <div className="mt-4 p-4 rounded-xl bg-guard-900 border border-guard-700 space-y-2">
         <p className="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
           <AlertOctagon className="w-4 h-4" />
-          <span>Emergency Cyber Helpline</span>
+          <span>{t.actions.emergencyHeading}</span>
         </p>
-        <p className="text-xs text-slate-400">If you transferred money or shared your OTP:</p>
+        <p className="text-xs text-slate-400">{t.actions.emergencySub}</p>
         <div className="flex items-center justify-between text-xs font-semibold pt-1">
           <span>National Cyber Crime:</span>
           <a href="tel:1930" className="text-red-400 font-bold hover:underline">
-            Dial 1930
+            {t.actions.dialHelpline}
           </a>
         </div>
         <div className="flex items-center justify-between text-xs font-semibold">
@@ -46,11 +50,10 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ verdict }) => {
             rel="noopener noreferrer"
             className="text-blue-400 hover:underline"
           >
-            cybercrime.gov.in
+            {t.actions.nationalPortal}
           </a>
         </div>
       </div>
     </div>
   );
 };
-

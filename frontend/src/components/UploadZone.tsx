@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send, ShieldAlert, ShieldCheck, UserX } from "lucide-react";
 import { simulateWhatsAppMessage, blockWhatsAppFraudster } from "@/lib/api";
 import { AnalysisResponse } from "@/lib/types";
+import { getTranslation } from "@/lib/translations";
 
 interface UploadZoneProps {
   onAnalyze: (formData: FormData) => void;
@@ -19,6 +20,7 @@ const WA_PRESETS = {
 };
 
 export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, selectedLang, onAnalysisResult }) => {
+  const t = getTranslation(selectedLang);
   const [activeTab, setActiveTab] = useState<"image" | "audio" | "text" | "whatsapp">("image");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
@@ -118,7 +120,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           }`}
         >
           <ImageIcon className="w-4 h-4" />
-          <span>Screenshot / QR</span>
+          <span>{t.upload.tabImage}</span>
         </button>
         <button
           onClick={() => setActiveTab("audio")}
@@ -127,7 +129,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           }`}
         >
           <Mic className="w-4 h-4" />
-          <span>Call Recording</span>
+          <span>{t.upload.tabAudio}</span>
         </button>
         <button
           onClick={() => setActiveTab("text")}
@@ -136,7 +138,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           }`}
         >
           <FileText className="w-4 h-4" />
-          <span>Pasted Message</span>
+          <span>{t.upload.tabText}</span>
         </button>
         <button
           onClick={() => setActiveTab("whatsapp")}
@@ -147,7 +149,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           }`}
         >
           <MessageCircle className="w-4 h-4 text-emerald-400" />
-          <span>WhatsApp Bot</span>
+          <span>{t.upload.tabWhatsapp}</span>
         </button>
       </div>
 
@@ -169,8 +171,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               <UploadCloud className="w-7 h-7" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">Click to upload screenshot or drag and drop</p>
-              <p className="text-xs text-slate-400 mt-1">WhatsApp message, suspicious SMS, Bank email, or payment QR code (PNG, JPG)</p>
+              <p className="font-semibold text-slate-200">{t.upload.dropImagePrompt}</p>
+              <p className="text-xs text-slate-400 mt-1">{t.upload.dropImageHint}</p>
             </div>
             {imageFile && (
               <div className="mt-3 p-2 bg-guard-800 rounded-lg border border-guard-600 text-xs text-blue-300 font-mono flex items-center gap-2">
@@ -200,8 +202,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               <Mic className="w-7 h-7" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">Upload Call Audio / Voice Note</p>
-              <p className="text-xs text-slate-400 mt-1">Recordings of suspected police / courier / KYC extortion calls (MP3, WAV, M4A)</p>
+              <p className="font-semibold text-slate-200">{t.upload.dropAudioPrompt}</p>
+              <p className="text-xs text-slate-400 mt-1">{t.upload.dropAudioHint}</p>
             </div>
             {audioFile && (
               <div className="mt-3 p-2 bg-guard-800 rounded-lg border border-guard-600 text-xs text-purple-300 font-mono flex items-center gap-2">
@@ -216,12 +218,12 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       {/* Tab 3: Text */}
       {activeTab === "text" && (
         <div className="space-y-3">
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Paste Suspicious Message / SMS / Link</label>
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.upload.tabText}</label>
           <textarea
             rows={4}
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
-            placeholder="Dear Customer, your electricity power will be disconnected tonight at 9:30 PM due to unpaid bill. Immediately contact officer at +919876543210 or pay to bescom@okaxis"
+            placeholder={t.upload.pastePlaceholder}
             className="w-full bg-guard-900 border border-guard-600 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
           />
         </div>
@@ -237,10 +239,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-white">CyberGuard WhatsApp Bot</span>
+                  <span className="font-bold text-sm text-white">{t.upload.waTitle}</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 </div>
-                <p className="text-[11px] text-emerald-300/80">Autonomous Anti-Extortion Forwarding Assistant</p>
+                <p className="text-[11px] text-emerald-300/80">{t.upload.waSubtitle}</p>
               </div>
             </div>
             <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-mono hidden sm:inline-block">
@@ -249,27 +251,27 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-400 font-medium">Quick Test Scams:</span>
+            <span className="text-xs text-slate-400 font-medium">{t.upload.waPresetsLabel}</span>
             <button
               type="button"
               onClick={() => setWaInput(WA_PRESETS.kyc)}
               className="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition"
             >
-              🏦 SBI KYC Suspension
+              🏦 {t.upload.waPresetKyc}
             </button>
             <button
               type="button"
               onClick={() => setWaInput(WA_PRESETS.electricity)}
               className="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition"
             >
-              ⚡ Electricity Disconnection
+              ⚡ {t.upload.waPresetElectricity}
             </button>
             <button
               type="button"
               onClick={() => setWaInput(WA_PRESETS.arrest)}
               className="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition"
             >
-              🚨 Digital Arrest Call
+              🚨 {t.upload.waPresetArrest}
             </button>
           </div>
 
@@ -278,7 +280,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               rows={3}
               value={waInput}
               onChange={(e) => setWaInput(e.target.value)}
-              placeholder="Paste or type forwarded WhatsApp message here..."
+              placeholder={t.upload.waPlaceholder}
               className="w-full bg-guard-900 border border-guard-600 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
             />
             <button
@@ -290,12 +292,12 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               {waSending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>ANALYZING FORWARDED MESSAGE...</span>
+                  <span>{t.upload.waAnalyzingBtn}</span>
                 </>
               ) : (
                 <>
                   <Send className="w-4 h-4" />
-                  <span>FORWARD TO CYBERGUARD WHATSAPP BOT</span>
+                  <span>{t.upload.waSendBtn}</span>
                 </>
               )}
             </button>
@@ -338,7 +340,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
                   <div className="flex items-center gap-2.5">
                     <ShieldAlert className="w-5 h-5 text-red-400 shrink-0 animate-pulse" />
                     <div>
-                      <p className="text-xs font-bold text-red-300">CRITICAL EXTORTION / FRAUD DETECTED</p>
+                      <p className="text-xs font-bold text-red-300">{t.upload.waDangerBadge}</p>
                       <p className="text-[11px] text-red-200/80">Break scammer psychological pressure loop & freeze contact</p>
                     </div>
                   </div>
@@ -351,12 +353,12 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
                     {blocking ? (
                       <>
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>BLOCKING SENDER...</span>
+                        <span>{t.upload.waBlockingBtn}</span>
                       </>
                     ) : (
                       <>
                         <UserX className="w-3.5 h-3.5" />
-                        <span>1-TAP PERMANENT BLOCK & CERTIFY 1930 REPORT</span>
+                        <span>{t.upload.waBlockBtn}</span>
                       </>
                     )}
                   </button>
@@ -366,7 +368,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               {isBlocked && (
                 <div className="p-3.5 bg-emerald-950/60 border border-emerald-500/50 rounded-xl flex items-center gap-2.5 text-xs text-emerald-300 font-semibold shadow-lg shadow-emerald-950/50">
                   <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
-                  <span>⛔ SENDER PERMANENTLY BLOCKED. Notifications muted & official Section 65B tamper-proof 1930 Cybercrime dossier compiled.</span>
+                  <span>{t.upload.waBlockedBadge}</span>
                 </div>
               )}
             </div>
@@ -384,12 +386,12 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           {isLoading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>ANALYZING THREAT TELEMETRY...</span>
+              <span>{t.upload.scanningButton}</span>
             </>
           ) : (
             <>
               <Scan className="w-5 h-5" />
-              <span>SCAN & ANALYZE WITH CYBERGUARD AI</span>
+              <span>{t.upload.scanButton}</span>
             </>
           )}
         </button>

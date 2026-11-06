@@ -3,18 +3,22 @@
 import React from "react";
 import { FileDown, Volume2 } from "lucide-react";
 import { RiskVerdict } from "@/lib/types";
+import { getTranslation } from "@/lib/translations";
 
 interface ThreatScoreProps {
   verdict: RiskVerdict;
   reportPdfUrl?: string | null;
   audioAdvisoryUrl?: string | null;
+  currentLang?: string;
 }
 
 export const ThreatScore: React.FC<ThreatScoreProps> = ({
   verdict,
   reportPdfUrl,
   audioAdvisoryUrl,
+  currentLang = "en",
 }) => {
+  const t = getTranslation(currentLang);
   const isDanger = verdict.severity === "DANGER";
   const isCaution = verdict.severity === "CAUTION";
 
@@ -39,7 +43,7 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
           >
             <span className="text-3xl leading-none">{verdict.risk_score}</span>
             <span className="text-[10px] text-slate-300 uppercase tracking-widest mt-1">
-              Risk Score
+              {t.threat.riskScoreLabel}
             </span>
           </div>
 
@@ -67,7 +71,7 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
             className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition shrink-0"
           >
             <FileDown className="w-4 h-4" />
-            <span>Download 1930 PDF</span>
+            <span>{t.threat.downloadReport}</span>
           </a>
         )}
       </div>
@@ -78,7 +82,7 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
             <Volume2 className="w-5 h-5" />
           </div>
           <div className="flex-1">
-            <p className="text-xs font-semibold text-slate-300">Spoken Voice Advisory (Regional Language)</p>
+            <p className="text-xs font-semibold text-slate-300">{t.threat.listenAdvisory}</p>
             <audio controls src={audioAdvisoryUrl} className="w-full mt-2 h-9 outline-none" />
           </div>
         </div>
@@ -86,4 +90,3 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
     </div>
   );
 };
-
