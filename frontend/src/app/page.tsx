@@ -49,7 +49,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header currentLang={currentLang} onLangChange={setCurrentLang} />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-10 space-y-6">
         <HeroSection currentLang={currentLang} />
 
         <UploadZone
@@ -65,7 +65,7 @@ export default function Home() {
         {timelineSteps.length > 0 && <AgentTimeline steps={timelineSteps} />}
 
         {analysisResult && (
-          <section className="space-y-6 pt-4">
+          <section className="space-y-4 pt-2">
             <ThreatScore
               verdict={analysisResult.verdict}
               reportPdfUrl={analysisResult.report_pdf_url}
@@ -73,7 +73,7 @@ export default function Home() {
               currentLang={currentLang}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <EvidencePanel
                 verdict={analysisResult.verdict}
                 evidence={analysisResult.evidence}

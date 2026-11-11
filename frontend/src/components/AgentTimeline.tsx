@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Cpu, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
+import { Activity, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { AgentStep } from "@/lib/types";
 
 interface AgentTimelineProps {
@@ -10,29 +10,29 @@ interface AgentTimelineProps {
 
 export const AgentTimeline: React.FC<AgentTimelineProps> = ({ steps }) => {
   return (
-    <section className="bg-guard-800 rounded-2xl border border-guard-700 p-6 space-y-4">
-      <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-        <Cpu className="w-4 h-4 text-blue-400" />
-        <span>Autonomous Multi-Agent Execution Pipeline</span>
+    <section className="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-3">
+      <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
+        <Activity className="w-3.5 h-3.5 text-zinc-500" />
+        <span>Verification Pipeline</span>
       </h3>
-      <div className="space-y-3">
+      <div className="space-y-2">
         {steps.map((s, idx) => (
           <div
             key={idx}
-            className="flex items-start gap-3 text-xs p-2.5 rounded-lg bg-guard-900 border border-guard-700/60"
+            className="flex items-start gap-2.5 text-xs py-2.5 px-3 rounded-lg bg-zinc-50 border border-zinc-200/70"
           >
             {s.status === "completed" && (
-              <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-700 mt-0.5 shrink-0" />
             )}
             {s.status === "running" && (
-              <Loader2 className="w-4 h-4 text-blue-400 animate-spin mt-0.5 shrink-0" />
+              <Loader2 className="w-4 h-4 text-zinc-700 animate-spin mt-0.5 shrink-0" />
             )}
             {s.status === "failed" && (
-              <AlertCircle className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+              <AlertCircle className="w-4 h-4 text-red-700 mt-0.5 shrink-0" />
             )}
-            <div>
-              <span className="font-bold text-slate-200">{s.agent_name}:</span>
-              <span className="text-slate-400 ml-1.5">{s.message}</span>
+            <div className="leading-relaxed">
+              <span className="font-medium text-zinc-900">{s.agent_name}</span>
+              <span className="text-zinc-600 ml-1.5">{s.message}</span>
             </div>
           </div>
         ))}
@@ -40,4 +40,3 @@ export const AgentTimeline: React.FC<AgentTimelineProps> = ({ steps }) => {
     </section>
   );
 };
-

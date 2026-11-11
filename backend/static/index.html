@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CyberGuard AI — Multimodal Fraud & Scam Defense Agent</title>
-  
+  <title>CyberGuard AI — Multimodal Fraud & Scam Defense</title>
+
   <!-- Progressive Web App (PWA) Mobile Install Support -->
-  <meta name="theme-color" content="#0B1120">
+  <meta name="theme-color" content="#ffffff">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="CyberGuard">
   <link rel="manifest" href="/static/manifest.json">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1067/1067256.png">
@@ -19,132 +19,100 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @keyframes pulseGlow {
-
-      0%,
-      100% {
-        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-      }
-
-      50% {
-        box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
-      }
-    }
-
-    .glow-pulse {
-      animation: pulseGlow 3s infinite;
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #fafafa;
+      color: #18181b;
     }
   </style>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            guard: {
-              900: '#0B1120',
-              800: '#0F172A',
-              700: '#1E293B',
-              600: '#334155',
-              accent: '#3B82F6',
-              danger: '#EF4444',
-              safe: '#10B981',
-              warn: '#F59E0B'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 
-<body
-  class="bg-guard-900 text-slate-100 min-h-screen font-sans flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+<body class="bg-zinc-50 text-zinc-900 min-h-screen flex flex-col antialiased selection:bg-zinc-900 selection:text-white">
 
   <!-- Top Navigation Header -->
-  <header class="border-b border-guard-700 bg-guard-800/80 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div
-          class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-          <i data-lucide="shield-alert" class="w-6 h-6 text-white"></i>
+  <header class="border-b border-zinc-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0">
+          <i data-lucide="shield" class="w-4 h-4 text-white"></i>
         </div>
-        <div>
-          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            CyberGuard <span
-              class="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">AI
-              2.0</span>
-          </h1>
-          <p class="text-xs text-slate-400">Multimodal Fraud & Scam Defense Agent</p>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-semibold tracking-tight text-zinc-900 truncate">CyberGuard</h1>
+            <span class="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">AI</span>
+          </div>
+          <p class="text-xs text-zinc-500 truncate hidden sm:block">Multimodal Fraud & Scam Defense</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2.5 shrink-0">
         <!-- Language Selector -->
-        <div class="flex items-center gap-2 bg-guard-700/60 px-3 py-1.5 rounded-lg border border-guard-600">
-          <i data-lucide="globe" class="w-4 h-4 text-slate-400"></i>
-          <select id="userLang" class="bg-transparent text-sm text-slate-200 outline-none cursor-pointer">
-            <option value="en" selected class="bg-guard-800">English (India)</option>
-            <option value="hi" class="bg-guard-800">हिंदी (Hindi)</option>
-            <option value="te" class="bg-guard-800">తెలుగు (Telugu)</option>
-            <option value="ta" class="bg-guard-800">தமிழ் (Tamil)</option>
-            <option value="bn" class="bg-guard-800">বাংলা (Bengali)</option>
+        <div class="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-md border border-zinc-200 hover:border-zinc-300 transition">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-zinc-500 shrink-0"></i>
+          <select id="userLang" aria-label="Language" class="bg-transparent text-xs sm:text-sm text-zinc-700 font-medium outline-none cursor-pointer">
+            <option value="en" selected class="bg-white text-zinc-900">English (India)</option>
+            <option value="hi" class="bg-white text-zinc-900">हिंदी (Hindi)</option>
+            <option value="te" class="bg-white text-zinc-900">తెలుగు (Telugu)</option>
+            <option value="ta" class="bg-white text-zinc-900">தமிழ் (Tamil)</option>
+            <option value="bn" class="bg-white text-zinc-900">বাংলা (Bengali)</option>
           </select>
         </div>
 
         <a href="tel:1930"
-          class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-sm font-semibold transition">
-          <i data-lucide="phone-call" class="w-4 h-4"></i>
-          <span>Helpline 1930</span>
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 text-zinc-800 text-xs font-medium transition">
+          <i data-lucide="phone-call" class="w-3.5 h-3.5 text-red-700"></i>
+          <span>1930 Helpline</span>
         </a>
       </div>
     </div>
   </header>
 
   <!-- Main Container -->
-  <main class="flex-1 max-w-5xl mx-auto w-full px-4 py-8 space-y-8">
+  <main class="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-10 space-y-6">
 
-    <!-- Hero Pitch Section -->
-    <section class="text-center space-y-3 pt-2">
-      <div
-        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-        <span>Autonomous Multi-Agent Protection for Ordinary Citizens</span>
-      </div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-        Never Fall for a <span
-          class="bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">Digital
-          Arrest, UPI, or Phishing Scam</span> Again.
-      </h2>
-      <p class="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
-        Upload a suspicious screenshot, scan a payment QR code, or upload a threatening call recording. Our multi-agent
-        AI verifies registries in real time and compiles an official cybercrime report.
+    <!-- Header Section -->
+    <section class="space-y-2.5 pt-2">
+      <p class="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        Protecting Citizens Against Financial Extortion
       </p>
+      <h2 class="text-2xl sm:text-3xl font-semibold text-zinc-900 tracking-tight leading-snug">
+        Never Fall for a <span class="underline decoration-zinc-300 underline-offset-4">Digital Arrest, UPI, or Phishing Scam</span> Again.
+      </h2>
+      <p class="text-zinc-600 max-w-2xl text-sm sm:text-base leading-relaxed">
+        Upload a suspicious screenshot, scan a payment QR code, or upload a threatening call recording. Our multi-agent AI verifies registries in real time and compiles an official cybercrime report.
+      </p>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pt-1 text-xs text-zinc-500">
+        <span>Screenshot OCR</span>
+        <span aria-hidden="true" class="text-zinc-300">/</span>
+        <span>UPI Collect QR Decoder</span>
+        <span aria-hidden="true" class="text-zinc-300">/</span>
+        <span>Call Threat Acoustic Analysis</span>
+      </div>
     </section>
 
     <!-- Interactive Input Card -->
-    <section class="bg-guard-800 rounded-2xl border border-guard-700 shadow-xl p-6 sm:p-8 space-y-6">
+    <section class="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-5">
 
       <!-- Modality Tabs -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 bg-guard-900 rounded-xl border border-guard-700">
-        <button id="tabImage" onclick="switchTab('image')"
-          class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition bg-blue-600 text-white shadow">
-          <i data-lucide="image" class="w-4 h-4"></i>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 p-1 bg-zinc-100 rounded-lg border border-zinc-200/70">
+        <button id="tabImage" type="button" onclick="switchTab('image')"
+          class="flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition bg-white text-zinc-900 shadow-sm border border-zinc-200/80">
+          <i data-lucide="image" class="w-4 h-4 text-zinc-500"></i>
           <span>Screenshot / QR</span>
         </button>
-        <button id="tabAudio" onclick="switchTab('audio')"
-          class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition text-slate-400 hover:text-white">
-          <i data-lucide="mic" class="w-4 h-4"></i>
+        <button id="tabAudio" type="button" onclick="switchTab('audio')"
+          class="flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition text-zinc-600 hover:text-zinc-900 border border-transparent">
+          <i data-lucide="mic" class="w-4 h-4 text-zinc-500"></i>
           <span>Call Recording</span>
         </button>
-        <button id="tabText" onclick="switchTab('text')"
-          class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition text-slate-400 hover:text-white">
-          <i data-lucide="file-text" class="w-4 h-4"></i>
+        <button id="tabText" type="button" onclick="switchTab('text')"
+          class="flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition text-zinc-600 hover:text-zinc-900 border border-transparent">
+          <i data-lucide="file-text" class="w-4 h-4 text-zinc-500"></i>
           <span>Pasted Message</span>
         </button>
-        <button id="tabWhatsapp" onclick="switchTab('whatsapp')"
-          class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition text-slate-400 hover:text-white border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20">
-          <i data-lucide="message-circle" class="w-4 h-4 text-emerald-400"></i>
+        <button id="tabWhatsapp" type="button" onclick="switchTab('whatsapp')"
+          class="flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition text-zinc-600 hover:text-zinc-900 border border-transparent">
+          <i data-lucide="message-circle" class="w-4 h-4 text-zinc-500"></i>
           <span>WhatsApp Bot</span>
         </button>
       </div>
@@ -152,21 +120,19 @@
       <!-- Tab 1: Image / QR Upload -->
       <div id="panelImage" class="space-y-4">
         <div id="dropzone" onclick="document.getElementById('fileInput').click()"
-          class="border-2 border-dashed border-guard-600 hover:border-blue-500 rounded-xl p-8 text-center cursor-pointer transition bg-guard-900/50 hover:bg-guard-900/80">
+          class="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50">
           <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileSelected(event)">
           <div class="flex flex-col items-center gap-3">
-            <div
-              class="w-14 h-14 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-              <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+            <div class="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
+              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
             </div>
             <div>
-              <p class="font-semibold text-slate-200">Click to upload screenshot or drag and drop</p>
-              <p class="text-xs text-slate-400 mt-1">WhatsApp message, suspicious SMS, Bank email, or payment QR code
-                (PNG, JPG)</p>
+              <p class="text-sm font-medium text-zinc-900">Click to upload or drag & drop suspicious screenshot or payment QR</p>
+              <p class="text-xs text-zinc-500 mt-1">Supports PNG, JPG, WEBP (Max 10MB)</p>
             </div>
             <div id="filePreview"
-              class="hidden mt-3 p-2 bg-guard-800 rounded-lg border border-guard-600 text-xs text-blue-300 font-mono flex items-center gap-2">
-              <i data-lucide="file-check" class="w-4 h-4 text-green-400"></i>
+              class="hidden mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
+              <i data-lucide="file-check" class="w-4 h-4 text-emerald-700"></i>
               <span id="fileName">image.png</span>
             </div>
           </div>
@@ -176,21 +142,19 @@
       <!-- Tab 2: Audio Upload -->
       <div id="panelAudio" class="hidden space-y-4">
         <div onclick="document.getElementById('audioInput').click()"
-          class="border-2 border-dashed border-guard-600 hover:border-purple-500 rounded-xl p-8 text-center cursor-pointer transition bg-guard-900/50 hover:bg-guard-900/80">
+          class="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50">
           <input type="file" id="audioInput" accept="audio/*" class="hidden" onchange="handleAudioSelected(event)">
           <div class="flex flex-col items-center gap-3">
-            <div
-              class="w-14 h-14 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <i data-lucide="headphones" class="w-7 h-7"></i>
+            <div class="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
+              <i data-lucide="mic" class="w-5 h-5"></i>
             </div>
             <div>
-              <p class="font-semibold text-slate-200">Upload Call Audio / Voice Note</p>
-              <p class="text-xs text-slate-400 mt-1">Recordings of suspected police / courier / KYC extortion calls
-                (MP3, WAV, M4A)</p>
+              <p class="text-sm font-medium text-zinc-900">Upload suspicious call recording or audio note</p>
+              <p class="text-xs text-zinc-500 mt-1">Supports MP3, WAV, M4A, OGG (Max 25MB)</p>
             </div>
             <div id="audioPreview"
-              class="hidden mt-3 p-2 bg-guard-800 rounded-lg border border-guard-600 text-xs text-purple-300 font-mono flex items-center gap-2">
-              <i data-lucide="mic" class="w-4 h-4 text-purple-400"></i>
+              class="hidden mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
+              <i data-lucide="file-check" class="w-4 h-4 text-emerald-700"></i>
               <span id="audioFileName">recording.mp3</span>
             </div>
           </div>
@@ -198,90 +162,86 @@
       </div>
 
       <!-- Tab 3: Text Paste -->
-      <div id="panelText" class="hidden space-y-3">
-        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Paste Suspicious Message / SMS /
-          Link</label>
+      <div id="panelText" class="hidden space-y-2">
+        <label class="block text-xs font-medium text-zinc-600">Pasted Message</label>
         <textarea id="textInput" rows="4"
-          placeholder="Dear Customer, your electricity power will be disconnected tonight at 9:30 PM due to unpaid bill. Immediately contact officer at +919876543210 or pay to bescom@okaxis"
-          class="w-full bg-guard-900 border border-guard-600 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"></textarea>
+          placeholder="Paste suspicious SMS, WhatsApp message, email, or UPI request note here..."
+          class="w-full bg-white border border-zinc-300 rounded-lg p-3 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900 transition"></textarea>
       </div>
 
       <!-- Tab 4: WhatsApp Bot Simulator -->
       <div id="panelWhatsapp" class="hidden space-y-4">
-        <!-- WhatsApp Header Banner -->
-        <div class="flex items-center justify-between p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl">
+        <div class="flex items-center justify-between p-3.5 bg-zinc-50 border border-zinc-200 rounded-lg gap-3">
           <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
-              <i data-lucide="message-circle" class="w-5 h-5"></i>
+            <div class="w-9 h-9 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700 shrink-0">
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
             </div>
             <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-bold text-sm text-white">CyberGuard WhatsApp Bot</span>
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              </div>
-              <p class="text-[11px] text-emerald-300">Official "Forward-to-Check" Security Assistant</p>
+              <p class="font-medium text-sm text-zinc-900">WhatsApp Bot Scam Interceptor Simulator</p>
+              <p class="text-xs text-zinc-500">Simulate incoming WhatsApp scam messages and auto-trigger safety actions.</p>
             </div>
           </div>
-          <span class="text-[10px] font-mono px-2 py-1 rounded bg-guard-900 border border-guard-700 text-slate-300">
-            Endpoint: /api/whatsapp/webhook
+          <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-white border border-zinc-200 text-zinc-600 hidden sm:inline-block shrink-0">
+            /api/whatsapp/webhook
           </span>
         </div>
 
         <!-- Quick Sample Chips -->
-        <div class="flex flex-wrap items-center gap-2 pt-1">
-          <span class="text-xs text-slate-400">Quick Test Forward:</span>
-          <button onclick="setWhatsAppPreset('kyc')"
-            class="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition">
-            🏦 SBI KYC Suspension
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-zinc-500 font-medium">Quick Test Presets:</span>
+          <button type="button" onclick="setWhatsAppPreset('kyc')"
+            class="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            SBI KYC Scam
           </button>
-          <button onclick="setWhatsAppPreset('electricity')"
-            class="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition">
-            ⚡ Electricity Disconnection
+          <button type="button" onclick="setWhatsAppPreset('electricity')"
+            class="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            Electricity Disconnect
           </button>
-          <button onclick="setWhatsAppPreset('arrest')"
-            class="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition">
-            🚨 Digital Arrest Call
+          <button type="button" onclick="setWhatsAppPreset('arrest')"
+            class="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            Digital Arrest Threat
           </button>
         </div>
 
         <!-- Message Input Box -->
-        <div class="space-y-2">
-          <textarea id="waInputText" rows="3" placeholder="Paste or type forwarded WhatsApp message here..."
-            class="w-full bg-guard-900 border border-guard-600 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"></textarea>
-          <button onclick="simulateWhatsAppForward()" id="btnWaSend"
-            class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition duration-200 cursor-pointer">
+        <div class="space-y-3">
+          <textarea id="waInputText" rows="3" placeholder="Type or select a suspicious WhatsApp message..."
+            class="w-full bg-white border border-zinc-300 rounded-lg p-3 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900 transition"></textarea>
+          <button type="button" onclick="simulateWhatsAppForward()" id="btnWaSend"
+            class="w-full py-2.5 px-4 rounded-lg font-medium text-sm bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center gap-2 transition cursor-pointer">
             <i data-lucide="send" class="w-4 h-4"></i>
-            <span>FORWARD TO CYBERGUARD WHATSAPP BOT</span>
+            <span>Simulate Message</span>
           </button>
         </div>
 
         <!-- Simulated WhatsApp Chat Window -->
         <div id="waChatWindow"
-          class="hidden rounded-xl bg-[#0b141a] border border-guard-700 p-4 space-y-4 max-h-[450px] overflow-y-auto">
+          class="hidden rounded-lg bg-zinc-50 border border-zinc-200 p-4 space-y-3.5 max-h-[450px] overflow-y-auto">
+          <div class="flex justify-center">
+            <span class="text-[11px] text-zinc-500 bg-white px-2.5 py-0.5 rounded-md border border-zinc-200">
+              Simulated Forward
+            </span>
+          </div>
+
           <!-- User Bubble (Right) -->
           <div class="flex justify-end">
-            <div
-              class="max-w-[85%] rounded-2xl rounded-tr-none bg-[#005c4b] text-slate-100 p-3 text-xs shadow space-y-1">
-              <p id="waUserBubbleText" class="whitespace-pre-wrap"></p>
-              <span class="text-[10px] text-emerald-200/60 block text-right">Just now • Forwarded</span>
+            <div class="max-w-[85%] rounded-lg rounded-tr-none bg-zinc-900 text-zinc-100 p-3 text-xs sm:text-sm space-y-1">
+              <p id="waUserBubbleText" class="whitespace-pre-wrap leading-relaxed"></p>
+              <span class="text-[10px] text-zinc-400 block text-right">Forwarded</span>
             </div>
           </div>
 
           <!-- Bot Bubble (Left) -->
           <div class="flex justify-start">
-            <div
-              class="max-w-[88%] rounded-2xl rounded-tl-none bg-[#202c33] text-slate-100 p-3.5 text-xs shadow space-y-2 border border-slate-700/40">
-              <div class="flex items-center gap-2 border-b border-slate-700 pb-2">
-                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
-                <span class="font-bold text-emerald-400 text-xs">CyberGuard AI Security Response</span>
+            <div class="max-w-[90%] rounded-lg rounded-tl-none bg-white text-zinc-800 p-3.5 text-xs sm:text-sm space-y-2 border border-zinc-200">
+              <div class="flex items-center gap-2 border-b border-zinc-100 pb-2">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-zinc-700"></i>
+                <span class="font-semibold text-zinc-900 text-xs">CyberGuard AI Responder</span>
               </div>
-              <pre id="waBotBubbleText"
-                class="whitespace-pre-wrap font-sans text-xs text-slate-200 leading-relaxed"></pre>
-              <div
-                class="flex items-center justify-between text-[10px] text-slate-400 pt-2 border-t border-slate-700/40">
-                <span>Verified by 5 Forensic Agents</span>
-                <span>Automated Response ✓✓</span>
+              <pre id="waBotBubbleText" class="whitespace-pre-wrap font-sans text-xs text-zinc-700 leading-relaxed"></pre>
+              <div class="flex items-center justify-between text-[10px] text-zinc-400 pt-2 border-t border-zinc-100">
+                <span>Verified by Forensic Agents</span>
+                <span>Automated Response</span>
               </div>
             </div>
           </div>
@@ -289,123 +249,122 @@
       </div>
 
       <!-- Submit Action Button -->
-      <div class="pt-2">
-        <button id="btnAnalyze" onclick="startAnalysis()"
-          class="w-full py-4 px-6 rounded-xl font-bold text-base bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition duration-200 cursor-pointer">
-          <i data-lucide="scan" class="w-5 h-5"></i>
-          <span>SCAN & ANALYZE WITH CYBERGUARD AI</span>
+      <div>
+        <button id="btnAnalyze" type="button" onclick="startAnalysis()"
+          class="w-full py-3 px-5 rounded-lg font-medium text-sm bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center gap-2 transition cursor-pointer">
+          <i data-lucide="scan" class="w-4 h-4"></i>
+          <span>Scan & Analyze with CyberGuard</span>
         </button>
       </div>
     </section>
 
     <!-- Real-time Agent Progress Stepper -->
-    <section id="stepperSection" class="hidden bg-guard-800 rounded-2xl border border-guard-700 p-6 space-y-4">
-      <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-        <i data-lucide="cpu" class="w-4 h-4 text-blue-400"></i>
-        <span>Autonomous Multi-Agent Execution Pipeline</span>
+    <section id="stepperSection" class="hidden bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-3">
+      <h3 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
+        <i data-lucide="activity" class="w-3.5 h-3.5 text-zinc-500"></i>
+        <span>Verification Pipeline</span>
       </h3>
-      <div id="stepperContainer" class="space-y-3">
+      <div id="stepperContainer" class="space-y-2">
         <!-- Steps injected dynamically -->
       </div>
     </section>
 
     <!-- Verdict & Results Section -->
-    <section id="resultsSection" class="hidden space-y-6">
+    <section id="resultsSection" class="hidden space-y-4 pt-2">
 
       <!-- Score Banner -->
       <div id="verdictBanner"
-        class="rounded-2xl p-6 sm:p-8 border shadow-2xl flex flex-col sm:flex-row items-center gap-6 justify-between bg-guard-800 border-guard-700">
-        <div class="flex items-center gap-5">
+        class="rounded-xl p-5 sm:p-6 border border-zinc-200 bg-white flex flex-col sm:flex-row sm:items-center gap-5 justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-5">
           <div id="gaugeCircle"
-            class="w-24 h-24 rounded-full flex flex-col items-center justify-center text-center font-black border-4 shadow-inner">
-            <span id="scoreNumber" class="text-3xl leading-none">0</span>
-            <span class="text-[10px] text-slate-300 uppercase tracking-widest mt-1">Risk Score</span>
+            class="w-24 h-24 rounded-lg flex flex-col items-center justify-center text-center border shrink-0">
+            <span id="scoreNumber" class="text-3xl font-semibold tabular-nums leading-none">0</span>
+            <span class="text-[11px] font-medium uppercase tracking-wider mt-1.5 opacity-80">Risk Score</span>
           </div>
-          <div class="space-y-1">
-            <div class="flex items-center gap-2">
+          <div class="space-y-1.5">
+            <div class="flex items-center gap-2.5 flex-wrap">
               <span id="severityBadge"
-                class="text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">UNKNOWN</span>
-              <span id="confidenceBadge" class="text-xs text-slate-400 font-mono">Confidence: 95%</span>
+                class="text-[11px] px-2 py-0.5 rounded font-semibold uppercase tracking-wide">UNKNOWN</span>
+              <span id="confidenceBadge" class="text-xs text-zinc-500 font-mono tabular-nums">Confidence 95%</span>
             </div>
-            <h3 id="archetypeTitle" class="text-2xl font-extrabold text-white">Scam Diagnosis</h3>
-            <p id="advisoryText" class="text-sm text-slate-300 max-w-xl">Actionable advisory instructions.</p>
+            <h3 id="archetypeTitle" class="text-xl font-semibold text-zinc-900 tracking-tight">Scam Diagnosis</h3>
+            <p id="advisoryText" class="text-sm text-zinc-600 max-w-xl leading-relaxed">Actionable advisory instructions.</p>
           </div>
         </div>
 
         <!-- Quick Action Downloads & Security Verification -->
-        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+        <div class="flex flex-col sm:flex-row gap-2.5 w-full sm:w-auto shrink-0">
           <a id="btnVerifySeal" href="#" target="_blank"
-            class="hidden px-4 py-3 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-200 font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
-            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+            class="hidden px-3.5 py-2.5 rounded-lg bg-white hover:bg-zinc-50 border border-zinc-200 text-zinc-800 font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+            <i data-lucide="shield-check" class="w-4 h-4 text-zinc-700"></i>
             <span>Verify 65B Seal</span>
           </a>
           <a id="btnPdfDownload" href="#" target="_blank"
-            class="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition">
+            class="px-4 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition">
             <i data-lucide="file-down" class="w-4 h-4"></i>
-            <span>Download 1930 PDF</span>
+            <span>Download Cybercrime PDF Report</span>
           </a>
         </div>
       </div>
 
       <!-- Spoken Audio Advisory Player (if available) -->
       <div id="audioPlayerCard"
-        class="hidden bg-guard-800 border border-guard-700 rounded-xl p-4 flex items-center gap-4">
-        <div
-          class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-          <i data-lucide="volume-2" class="w-5 h-5"></i>
+        class="hidden bg-white border border-zinc-200 rounded-xl p-4 flex items-center gap-4">
+        <div class="w-10 h-10 rounded-lg bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-700 shrink-0">
+          <i data-lucide="volume-2" class="w-4 h-4"></i>
         </div>
-        <div class="flex-1">
-          <p class="text-xs font-semibold text-slate-300">Spoken Voice Advisory (Regional Language)</p>
+        <div class="flex-1 min-w-0">
+          <p class="text-xs font-medium text-zinc-700">Listen Audio Advisory</p>
           <audio id="audioElement" controls class="w-full mt-2 h-9 outline-none"></audio>
         </div>
       </div>
 
       <!-- Two-Column Findings & Checklist -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         <!-- Column 1: Evidence & Reasons -->
-        <div class="bg-guard-800 rounded-2xl border border-guard-700 p-6 space-y-4">
-          <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <i data-lucide="list-checks" class="w-4 h-4 text-blue-400"></i>
-            <span>Evidentiary Reasoning</span>
+        <div class="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-4">
+          <h4 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-4 h-4 text-zinc-500"></i>
+            <span>Forensic Evidence & Findings</span>
           </h4>
-          <ul id="reasoningList" class="space-y-2 text-sm text-slate-300">
+          <ul id="reasoningList" class="space-y-2.5 text-sm text-zinc-700 leading-relaxed">
             <!-- Injected dynamically -->
           </ul>
 
-          <div class="border-t border-guard-700 pt-4 mt-4 space-y-2">
-            <p class="text-xs font-semibold text-slate-400 uppercase">Technical Telemetry</p>
-            <div id="telemetryTags" class="flex flex-wrap gap-2 text-xs">
+          <div class="border-t border-zinc-100 pt-4 space-y-2.5">
+            <p class="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Detected Threat Flags</p>
+            <div id="telemetryTags" class="flex flex-wrap gap-1.5 text-xs">
               <!-- Indicators injected -->
             </div>
           </div>
         </div>
 
         <!-- Column 2: What You Should Do Immediately -->
-        <div class="bg-guard-800 rounded-2xl border border-guard-700 p-6 space-y-4">
-          <h4 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <i data-lucide="shield-check" class="w-4 h-4 text-green-400"></i>
+        <div class="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-4">
+          <h4 class="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
+            <i data-lucide="shield-check" class="w-4 h-4 text-zinc-500"></i>
             <span>Immediate Protective Actions</span>
           </h4>
-          <ul id="checklistItems" class="space-y-2 text-sm text-slate-300">
+          <ul id="checklistItems" class="space-y-2.5 text-sm text-zinc-700 leading-relaxed">
             <!-- Checklist items injected -->
           </ul>
 
           <!-- Emergency Helplines -->
-          <div class="mt-4 p-4 rounded-xl bg-guard-900 border border-guard-700 space-y-2">
-            <p class="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
-              <i data-lucide="alert-octagon" class="w-4 h-4"></i>
+          <div class="mt-4 p-4 rounded-lg bg-zinc-50 border border-zinc-200 space-y-2">
+            <p class="text-xs font-semibold text-red-800 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="alert-octagon" class="w-3.5 h-3.5 text-red-700"></i>
               <span>Emergency Cyber Helpline</span>
             </p>
-            <p class="text-xs text-slate-400">If you transferred money or gave your OTP:</p>
-            <div class="flex items-center justify-between text-xs font-semibold pt-1">
-              <span>National Cyber Crime:</span>
-              <a href="tel:1930" class="text-red-400 font-bold hover:underline">Dial 1930</a>
+            <p class="text-xs text-zinc-600">If you transferred money or shared your OTP:</p>
+            <div class="flex items-center justify-between text-xs pt-1 border-t border-zinc-200/80">
+              <span class="text-zinc-600 font-medium">National Cyber Crime:</span>
+              <a href="tel:1930" class="text-red-700 font-semibold hover:underline">Dial 1930</a>
             </div>
-            <div class="flex items-center justify-between text-xs font-semibold">
-              <span>National Portal:</span>
+            <div class="flex items-center justify-between text-xs">
+              <span class="text-zinc-600 font-medium">National Portal:</span>
               <a href="https://cybercrime.gov.in" target="_blank"
-                class="text-blue-400 hover:underline">cybercrime.gov.in</a>
+                class="text-zinc-900 font-medium underline decoration-zinc-300 hover:decoration-zinc-900">cybercrime.gov.in</a>
             </div>
           </div>
         </div>
@@ -417,10 +376,10 @@
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-guard-700 bg-guard-800 py-6 text-center text-xs text-slate-500">
-    <div class="max-w-4xl mx-auto px-4 space-y-1">
-      <p>CyberGuard AI is an autonomous multimodal cyber-defense agent designed for public digital safety.</p>
-      <p>Complies with National Cyber Crime Reporting Portal standards (1930 / cybercrime.gov.in).</p>
+  <footer class="border-t border-zinc-200 bg-white py-6 text-xs text-zinc-500">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-center sm:text-left">
+      <p>Dedicated to protecting citizens against digital extortion, fake parcel scams, and UPI collect fraud.</p>
+      <p class="text-zinc-400 shrink-0">Official Indian Cyber Crime Reporting: Dial 1930 or visit cybercrime.gov.in</p>
     </div>
   </footer>
 
@@ -442,12 +401,10 @@
         const btn = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
         const panel = document.getElementById('panel' + t.charAt(0).toUpperCase() + t.slice(1));
         if (t === tab) {
-          btn.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition " +
-            (t === 'whatsapp' ? "bg-emerald-600 text-white shadow border border-emerald-400" : "bg-blue-600 text-white shadow");
+          btn.className = "flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition bg-white text-zinc-900 shadow-sm border border-zinc-200/80";
           panel.classList.remove('hidden');
         } else {
-          btn.className = "flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition text-slate-400 hover:text-white " +
-            (t === 'whatsapp' ? "border border-emerald-500/30 bg-emerald-500/10" : "");
+          btn.className = "flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition text-zinc-600 hover:text-zinc-900 border border-transparent";
           panel.classList.add('hidden');
         }
       });
@@ -477,7 +434,7 @@
       }
 
       sendBtn.disabled = true;
-      sendBtn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i><span>FORWARDING & ANALYZING...</span>`;
+      sendBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing...</span>`;
       lucide.createIcons();
 
       try {
@@ -497,13 +454,11 @@
 
         const data = await response.json();
 
-        // Render in WhatsApp chat bubble window
         document.getElementById('waUserBubbleText').innerText = text;
         document.getElementById('waBotBubbleText').innerText = data.whatsapp_rendered_reply;
         document.getElementById('waChatWindow').classList.remove('hidden');
         document.getElementById('waChatWindow').scrollIntoView({ behavior: 'smooth' });
 
-        // Also populate the global verdict section below if available
         if (data.verdict) {
           renderResults({
             verdict: data.verdict,
@@ -519,7 +474,7 @@
         alert("Error during WhatsApp simulation: " + err.message);
       } finally {
         sendBtn.disabled = false;
-        sendBtn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i><span>FORWARD TO CYBERGUARD WHATSAPP BOT</span>`;
+        sendBtn.innerHTML = `<i data-lucide="send" class="w-4 h-4"></i><span>Simulate Message</span>`;
         lucide.createIcons();
       }
     }
@@ -549,7 +504,6 @@
         return;
       }
 
-      // Show Stepper & Hide Previous Results
       const stepperSection = document.getElementById('stepperSection');
       const stepperContainer = document.getElementById('stepperContainer');
       const resultsSection = document.getElementById('resultsSection');
@@ -559,7 +513,7 @@
       stepperSection.classList.remove('hidden');
       resultsSection.classList.add('hidden');
       btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i><span>ANALYZING THREAT TELEMETRY...</span>`;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Analyzing submission...</span>`;
       lucide.createIcons();
 
       const formData = new FormData();
@@ -568,7 +522,6 @@
       if (textVal.trim()) formData.append('text', textVal.trim());
       formData.append('language', lang);
 
-      // Add optimistic steps
       addStep("Supervisor Router", "running", "Ingesting multimodal inputs and dispatching to forensic agents...");
 
       try {
@@ -588,7 +541,7 @@
         alert("Error during scan: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="scan" class="w-5 h-5"></i><span>SCAN & ANALYZE WITH CYBERGUARD AI</span>`;
+        btn.innerHTML = `<i data-lucide="scan" class="w-4 h-4"></i><span>Scan & Analyze with CyberGuard</span>`;
         lucide.createIcons();
       }
     }
@@ -596,17 +549,17 @@
     function addStep(name, status, msg) {
       const container = document.getElementById('stepperContainer');
       const div = document.createElement('div');
-      div.className = "flex items-start gap-3 text-xs p-2.5 rounded-lg bg-guard-900 border border-guard-700/60";
+      div.className = "flex items-start gap-2.5 text-xs py-2.5 px-3 rounded-lg bg-zinc-50 border border-zinc-200/70";
 
       let icon = status === 'completed'
-        ? `<i data-lucide="check-circle-2" class="w-4 h-4 text-green-400 mt-0.5"></i>`
-        : `<i data-lucide="loader" class="w-4 h-4 text-blue-400 animate-spin mt-0.5"></i>`;
+        ? `<i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-700 mt-0.5 shrink-0"></i>`
+        : `<i data-lucide="loader-2" class="w-4 h-4 text-zinc-700 animate-spin mt-0.5 shrink-0"></i>`;
 
       div.innerHTML = `
         ${icon}
-        <div>
-          <span class="font-bold text-slate-200">${name}:</span>
-          <span class="text-slate-400 ml-1">${msg}</span>
+        <div class="leading-relaxed">
+          <span class="font-medium text-zinc-900">${name}</span>
+          <span class="text-zinc-600 ml-1.5">${msg}</span>
         </div>
       `;
       container.appendChild(div);
@@ -616,12 +569,10 @@
     function renderResults(data) {
       const { verdict, evidence, threat_intel, report_pdf_url, audio_advisory_url, steps } = data;
 
-      // Update stepper with actual completed steps
       const stepperContainer = document.getElementById('stepperContainer');
       stepperContainer.innerHTML = '';
       steps.forEach(s => addStep(s.agent_name, s.status, s.message));
 
-      // Visual Score Gauge
       const scoreNum = document.getElementById('scoreNumber');
       const circle = document.getElementById('gaugeCircle');
       const sevBadge = document.getElementById('severityBadge');
@@ -632,25 +583,22 @@
       scoreNum.innerText = verdict.risk_score;
       archTitle.innerText = verdict.scam_archetype.replace(/_/g, " ");
       advText.innerText = verdict.actionable_advisory;
+      banner.className = "rounded-xl p-5 sm:p-6 border border-zinc-200 bg-white flex flex-col sm:flex-row sm:items-center gap-5 justify-between";
 
       if (verdict.severity === "DANGER") {
-        circle.className = "w-24 h-24 rounded-full flex flex-col items-center justify-center text-center font-black border-4 shadow-inner border-red-500 bg-red-500/10 text-red-400";
-        sevBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30";
-        sevBadge.innerText = "CRITICAL THREAT";
-        banner.className = "rounded-2xl p-6 sm:p-8 border shadow-2xl flex flex-col sm:flex-row items-center gap-6 justify-between bg-guard-800 border-red-500/30 glow-pulse";
+        circle.className = "w-24 h-24 rounded-lg flex flex-col items-center justify-center text-center border shrink-0 border-red-200 bg-red-50 text-red-900";
+        sevBadge.className = "text-[11px] px-2 py-0.5 rounded font-semibold uppercase tracking-wide bg-red-50 text-red-800 border border-red-200";
+        sevBadge.innerText = "DANGER";
       } else if (verdict.severity === "CAUTION") {
-        circle.className = "w-24 h-24 rounded-full flex flex-col items-center justify-center text-center font-black border-4 shadow-inner border-yellow-500 bg-yellow-500/10 text-yellow-400";
-        sevBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
-        sevBadge.innerText = "SUSPICIOUS";
-        banner.className = "rounded-2xl p-6 sm:p-8 border shadow-2xl flex flex-col sm:flex-row items-center gap-6 justify-between bg-guard-800 border-yellow-500/30";
+        circle.className = "w-24 h-24 rounded-lg flex flex-col items-center justify-center text-center border shrink-0 border-amber-200 bg-amber-50 text-amber-900";
+        sevBadge.className = "text-[11px] px-2 py-0.5 rounded font-semibold uppercase tracking-wide bg-amber-50 text-amber-800 border border-amber-200";
+        sevBadge.innerText = "CAUTION";
       } else {
-        circle.className = "w-24 h-24 rounded-full flex flex-col items-center justify-center text-center font-black border-4 shadow-inner border-green-500 bg-green-500/10 text-green-400";
-        sevBadge.className = "text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-green-500/20 text-green-400 border border-green-500/30";
-        sevBadge.innerText = "SAFE / CLEAN";
-        banner.className = "rounded-2xl p-6 sm:p-8 border shadow-2xl flex flex-col sm:flex-row items-center gap-6 justify-between bg-guard-800 border-green-500/30";
+        circle.className = "w-24 h-24 rounded-lg flex flex-col items-center justify-center text-center border shrink-0 border-emerald-200 bg-emerald-50 text-emerald-900";
+        sevBadge.className = "text-[11px] px-2 py-0.5 rounded font-semibold uppercase tracking-wide bg-emerald-50 text-emerald-800 border border-emerald-200";
+        sevBadge.innerText = "SAFE";
       }
 
-      // Download PDF & Verify Seal buttons
       const btnPdf = document.getElementById('btnPdfDownload');
       if (report_pdf_url) {
         btnPdf.href = report_pdf_url;
@@ -667,7 +615,6 @@
         btnSeal.classList.add('hidden');
       }
 
-      // Spoken Audio Advisory
       const audioCard = document.getElementById('audioPlayerCard');
       const audioElem = document.getElementById('audioElement');
       if (audio_advisory_url) {
@@ -677,50 +624,47 @@
         audioCard.classList.add('hidden');
       }
 
-      // Reasoning
       const rList = document.getElementById('reasoningList');
       rList.innerHTML = '';
       verdict.reasoning.forEach(r => {
         const li = document.createElement('li');
-        li.className = "flex items-start gap-2";
-        li.innerHTML = `<span>${r}</span>`;
+        li.className = "flex items-start gap-2.5";
+        li.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-zinc-400 mt-2 shrink-0"></span><span>${r}</span>`;
         rList.appendChild(li);
       });
 
-      // Checklist
       const cList = document.getElementById('checklistItems');
       cList.innerHTML = '';
       verdict.safety_checklist.forEach(c => {
         const li = document.createElement('li');
-        li.className = "flex items-start gap-2 text-slate-300";
-        li.innerHTML = `<i data-lucide="check-square" class="w-4 h-4 text-blue-400 shrink-0 mt-0.5"></i><span>${c}</span>`;
+        li.className = "flex items-start gap-2.5";
+        li.innerHTML = `<i data-lucide="check-square" class="w-4 h-4 text-zinc-500 shrink-0 mt-0.5"></i><span>${c}</span>`;
         cList.appendChild(li);
       });
 
-      // Telemetry Tags
       const tagsContainer = document.getElementById('telemetryTags');
       tagsContainer.innerHTML = '';
 
       if (evidence.impersonated_brand) {
-        tagsContainer.innerHTML += `<span class="px-2 py-1 rounded bg-purple-500/10 border border-purple-500/30 text-purple-300">Impersonated: ${evidence.impersonated_brand}</span>`;
+        tagsContainer.innerHTML += `<span class="px-2.5 py-1 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono">Impersonated: ${evidence.impersonated_brand}</span>`;
       }
       evidence.extracted_urls.forEach(u => {
-        tagsContainer.innerHTML += `<span class="px-2 py-1 rounded bg-blue-500/10 border border-blue-500/30 text-blue-300">URL: ${u}</span>`;
+        tagsContainer.innerHTML += `<span class="px-2.5 py-1 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono break-all">URL: ${u}</span>`;
       });
       evidence.upi_vpas.forEach(v => {
-        tagsContainer.innerHTML += `<span class="px-2 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300">VPA: ${v}</span>`;
+        tagsContainer.innerHTML += `<span class="px-2.5 py-1 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono">VPA: ${v}</span>`;
       });
       if (evidence.qr_payload) {
-        tagsContainer.innerHTML += `<span class="px-2 py-1 rounded bg-red-500/10 border border-red-500/30 text-red-300">QR Code Embedded</span>`;
+        tagsContainer.innerHTML += `<span class="px-2.5 py-1 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono">QR Code Embedded</span>`;
       }
       if (evidence.pii_redacted_count && evidence.pii_redacted_count > 0) {
-        tagsContainer.innerHTML += `<span class="px-2 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-semibold flex items-center gap-1">🔒 DPDP Shield: ${evidence.pii_redacted_count} PII Entity Masked</span>`;
+        tagsContainer.innerHTML += `<span class="px-2.5 py-1 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono">DPDP Shield: ${evidence.pii_redacted_count} PII Entity Masked</span>`;
       }
       if (evidence.adversarial_injection_detected) {
-        tagsContainer.innerHTML += `<span class="px-2 py-1 rounded bg-red-600/20 border border-red-500 text-red-300 font-bold flex items-center gap-1">⚠️ Adversarial Jailbreak Blocked</span>`;
+        tagsContainer.innerHTML += `<span class="px-2.5 py-1 rounded-md bg-red-50 border border-red-200 text-red-800 font-mono font-medium">Adversarial Jailbreak Blocked</span>`;
       }
       if (verdict.evidence_sha256_hash) {
-        tagsContainer.innerHTML += `<a href="/api/verify/${verdict.evidence_sha256_hash}" target="_blank" class="px-2 py-1 rounded bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-mono text-[11px] hover:underline flex items-center gap-1">🔐 Seal: ${verdict.evidence_sha256_hash.substring(0, 16)}...</a>`;
+        tagsContainer.innerHTML += `<a href="/api/verify/${verdict.evidence_sha256_hash}" target="_blank" class="px-2.5 py-1 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-mono hover:underline">Seal: ${verdict.evidence_sha256_hash.substring(0, 16)}...</a>`;
       }
 
       document.getElementById('resultsSection').classList.remove('hidden');
@@ -728,7 +672,6 @@
       document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Initialize icons
     lucide.createIcons();
   </script>
 </body>

@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CyberGuard AI — Multimodal Fraud & Scam Defense Agent",
-  description: "Real-time AI protection against Digital Arrest, UPI scams, and phishing intimidation.",
+  title: "CyberGuard AI — Multimodal Fraud & Scam Defense",
+  description: "Real-time AI verification against Digital Arrest, UPI scams, and phishing intimidation.",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "CyberGuard",
   },
   icons: {
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#0B1120",
+  themeColor: "#ffffff",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -29,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-guard-900 text-slate-100 min-h-screen antialiased selection:bg-blue-600 selection:text-white">
+    <html lang="en">
+      <body className="bg-zinc-50 text-zinc-900 min-h-screen antialiased selection:bg-zinc-900 selection:text-white">
         {children}
       </body>
     </html>

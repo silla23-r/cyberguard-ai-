@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ShieldAlert, Globe, PhoneCall } from "lucide-react";
+import { Shield, Globe, PhoneCall } from "lucide-react";
 import { LANGUAGES } from "@/lib/constants";
 import { getTranslation } from "@/lib/translations";
 
@@ -14,30 +14,38 @@ export const Header: React.FC<HeaderProps> = ({ currentLang, onLangChange }) => 
   const t = getTranslation(currentLang);
 
   return (
-    <header className="border-b border-guard-700 bg-guard-800/80 backdrop-blur sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <ShieldAlert className="w-6 h-6 text-white" />
+    <header className="border-b border-zinc-200 bg-white/95 backdrop-blur-sm sticky top-0 z-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-9 h-9 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0">
+            <Shield className="w-4 h-4 text-white stroke-[2]" />
           </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              CyberGuard <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">AI</span>
-            </h1>
-            <p className="text-xs text-slate-400">{t.header.subtitle}</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h1 className="text-base font-semibold tracking-tight text-zinc-900 truncate">
+                CyberGuard
+              </h1>
+              <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-100 text-zinc-600 border border-zinc-200">
+                AI
+              </span>
+            </div>
+            <p className="text-xs text-zinc-500 truncate hidden sm:block">
+              {t.header.subtitle}
+            </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-guard-700/60 px-3 py-1.5 rounded-lg border border-guard-600">
-            <Globe className="w-4 h-4 text-slate-400" />
+        <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 bg-white px-2.5 py-1.5 rounded-md border border-zinc-200 hover:border-zinc-300 transition">
+            <Globe className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
             <select
               value={currentLang}
               onChange={(e) => onLangChange(e.target.value)}
-              className="bg-transparent text-sm text-slate-200 outline-none cursor-pointer"
+              aria-label="Language"
+              className="bg-transparent text-xs sm:text-sm text-zinc-700 font-medium outline-none cursor-pointer"
             >
               {LANGUAGES.map((l) => (
-                <option key={l.code} value={l.code} className="bg-guard-800">
+                <option key={l.code} value={l.code} className="bg-white text-zinc-900">
                   {l.label}
                 </option>
               ))}
@@ -46,9 +54,9 @@ export const Header: React.FC<HeaderProps> = ({ currentLang, onLangChange }) => 
 
           <a
             href="tel:1930"
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 text-sm font-semibold transition"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50 text-zinc-800 text-xs font-medium transition"
           >
-            <PhoneCall className="w-4 h-4" />
+            <PhoneCall className="w-3.5 h-3.5 text-red-700" />
             <span>{t.header.helpline}</span>
           </a>
         </div>
@@ -56,4 +64,3 @@ export const Header: React.FC<HeaderProps> = ({ currentLang, onLangChange }) => 
     </header>
   );
 };
-

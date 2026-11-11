@@ -14,41 +14,41 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({ verdict, currentLang =
   const t = getTranslation(currentLang);
 
   return (
-    <div className="bg-guard-800 rounded-2xl border border-guard-700 p-6 space-y-4">
-      <h4 className="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-        <ShieldCheck className="w-4 h-4 text-green-400" />
+    <div className="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-4">
+      <h4 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider flex items-center gap-2">
+        <ShieldCheck className="w-4 h-4 text-zinc-500" />
         <span>{t.actions.actionsHeading}</span>
       </h4>
 
-      <ul className="space-y-2 text-sm text-slate-300">
+      <ul className="space-y-2.5 text-sm text-zinc-700 leading-relaxed">
         {verdict.safety_checklist.map((item, idx) => (
-          <li key={idx} className="flex items-start gap-2 text-slate-300">
-            <CheckSquare className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+          <li key={idx} className="flex items-start gap-2.5">
+            <CheckSquare className="w-4 h-4 text-zinc-500 shrink-0 mt-0.5" />
             <span>{item}</span>
           </li>
         ))}
       </ul>
 
       {/* Emergency Helplines */}
-      <div className="mt-4 p-4 rounded-xl bg-guard-900 border border-guard-700 space-y-2">
-        <p className="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-1.5">
-          <AlertOctagon className="w-4 h-4" />
+      <div className="mt-4 p-4 rounded-lg bg-zinc-50 border border-zinc-200 space-y-2">
+        <p className="text-xs font-semibold text-red-800 uppercase tracking-wider flex items-center gap-1.5">
+          <AlertOctagon className="w-3.5 h-3.5 text-red-700" />
           <span>{t.actions.emergencyHeading}</span>
         </p>
-        <p className="text-xs text-slate-400">{t.actions.emergencySub}</p>
-        <div className="flex items-center justify-between text-xs font-semibold pt-1">
-          <span>National Cyber Crime:</span>
-          <a href="tel:1930" className="text-red-400 font-bold hover:underline">
+        <p className="text-xs text-zinc-600">{t.actions.emergencySub}</p>
+        <div className="flex items-center justify-between text-xs pt-1 border-t border-zinc-200/80">
+          <span className="text-zinc-600 font-medium">National Cyber Crime:</span>
+          <a href="tel:1930" className="text-red-700 font-semibold hover:underline">
             {t.actions.dialHelpline}
           </a>
         </div>
-        <div className="flex items-center justify-between text-xs font-semibold">
-          <span>National Portal:</span>
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-zinc-600 font-medium">National Portal:</span>
           <a
             href="https://cybercrime.gov.in"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-400 hover:underline"
+            className="text-zinc-900 font-medium underline decoration-zinc-300 hover:decoration-zinc-900"
           >
             {t.actions.nationalPortal}
           </a>

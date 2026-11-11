@@ -22,44 +22,48 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
   const isDanger = verdict.severity === "DANGER";
   const isCaution = verdict.severity === "CAUTION";
 
-  const getBorderColor = () => {
-    if (isDanger) return "border-red-500/40 bg-red-500/10 text-red-400";
-    if (isCaution) return "border-yellow-500/40 bg-yellow-500/10 text-yellow-400";
-    return "border-green-500/40 bg-green-500/10 text-green-400";
+  const getScoreBoxStyle = () => {
+    if (isDanger) return "border-red-200 bg-red-50 text-red-900";
+    if (isCaution) return "border-amber-200 bg-amber-50 text-amber-900";
+    return "border-emerald-200 bg-emerald-50 text-emerald-900";
   };
 
-  const getBadgeColor = () => {
-    if (isDanger) return "bg-red-500/20 text-red-400 border border-red-500/30";
-    if (isCaution) return "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
-    return "bg-green-500/20 text-green-400 border border-green-500/30";
+  const getBadgeStyle = () => {
+    if (isDanger) return "bg-red-50 text-red-800 border border-red-200";
+    if (isCaution) return "bg-amber-50 text-amber-800 border border-amber-200";
+    return "bg-emerald-50 text-emerald-800 border border-emerald-200";
   };
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-2xl p-6 sm:p-8 border shadow-2xl flex flex-col sm:flex-row items-center gap-6 justify-between bg-guard-800 border-guard-700">
-        <div className="flex items-center gap-5">
+    <div className="space-y-4">
+      <div className="rounded-xl p-5 sm:p-6 border border-zinc-200 bg-white flex flex-col sm:flex-row sm:items-center gap-5 justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5">
           <div
-            className={`w-24 h-24 rounded-full flex flex-col items-center justify-center text-center font-black border-4 shadow-inner ${getBorderColor()}`}
+            className={`w-24 h-24 rounded-lg flex flex-col items-center justify-center text-center border shrink-0 ${getScoreBoxStyle()}`}
           >
-            <span className="text-3xl leading-none">{verdict.risk_score}</span>
-            <span className="text-[10px] text-slate-300 uppercase tracking-widest mt-1">
+            <span className="text-3xl font-semibold tabular-nums leading-none">
+              {verdict.risk_score}
+            </span>
+            <span className="text-[11px] font-medium uppercase tracking-wider mt-1.5 opacity-80">
               {t.threat.riskScoreLabel}
             </span>
           </div>
 
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider ${getBadgeColor()}`}>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <span className={`text-[11px] px-2 py-0.5 rounded font-semibold uppercase tracking-wide ${getBadgeStyle()}`}>
                 {verdict.severity}
               </span>
-              <span className="text-xs text-slate-400 font-mono">
-                Confidence: {Math.round(verdict.confidence * 100)}%
+              <span className="text-xs text-zinc-500 font-mono tabular-nums">
+                Confidence {Math.round(verdict.confidence * 100)}%
               </span>
             </div>
-            <h3 className="text-2xl font-extrabold text-white">
+            <h3 className="text-xl font-semibold text-zinc-900 tracking-tight">
               {verdict.scam_archetype.replace(/_/g, " ")}
             </h3>
-            <p className="text-sm text-slate-300 max-w-xl">{verdict.actionable_advisory}</p>
+            <p className="text-sm text-zinc-600 max-w-xl leading-relaxed">
+              {verdict.actionable_advisory}
+            </p>
           </div>
         </div>
 
@@ -68,7 +72,7 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
             href={reportPdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 transition shrink-0"
+            className="px-4 py-2.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs sm:text-sm flex items-center justify-center gap-2 transition shrink-0"
           >
             <FileDown className="w-4 h-4" />
             <span>{t.threat.downloadReport}</span>
@@ -77,12 +81,12 @@ export const ThreatScore: React.FC<ThreatScoreProps> = ({
       </div>
 
       {audioAdvisoryUrl && (
-        <div className="bg-guard-800 border border-guard-700 rounded-xl p-4 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0">
-            <Volume2 className="w-5 h-5" />
+        <div className="bg-white border border-zinc-200 rounded-xl p-4 flex items-center gap-4">
+          <div className="w-10 h-10 rounded-lg bg-zinc-100 border border-zinc-200 flex items-center justify-center text-zinc-700 shrink-0">
+            <Volume2 className="w-4 h-4" />
           </div>
-          <div className="flex-1">
-            <p className="text-xs font-semibold text-slate-300">{t.threat.listenAdvisory}</p>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-zinc-700">{t.threat.listenAdvisory}</p>
             <audio controls src={audioAdvisoryUrl} className="w-full mt-2 h-9 outline-none" />
           </div>
         </div>

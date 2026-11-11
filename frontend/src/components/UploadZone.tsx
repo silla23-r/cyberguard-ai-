@@ -109,46 +109,31 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
     }
   };
 
+  const tabClass = (active: boolean) =>
+    `flex items-center justify-center gap-2 py-2 px-3 rounded-md font-medium text-xs sm:text-sm transition ${
+      active
+        ? "bg-white text-zinc-900 shadow-sm border border-zinc-200/80"
+        : "text-zinc-600 hover:text-zinc-900 border border-transparent"
+    }`;
+
   return (
-    <section className="bg-guard-800 rounded-2xl border border-guard-700 shadow-xl p-6 sm:p-8 space-y-6">
-      {/* Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 p-1.5 bg-guard-900 rounded-xl border border-guard-700">
-        <button
-          onClick={() => setActiveTab("image")}
-          className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition ${
-            activeTab === "image" ? "bg-blue-600 text-white shadow" : "text-slate-400 hover:text-white"
-          }`}
-        >
-          <ImageIcon className="w-4 h-4" />
+    <section className="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-5">
+      {/* Segmented Tabs */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 p-1 bg-zinc-100 rounded-lg border border-zinc-200/70">
+        <button type="button" onClick={() => setActiveTab("image")} className={tabClass(activeTab === "image")}>
+          <ImageIcon className="w-4 h-4 text-zinc-500" />
           <span>{t.upload.tabImage}</span>
         </button>
-        <button
-          onClick={() => setActiveTab("audio")}
-          className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition ${
-            activeTab === "audio" ? "bg-blue-600 text-white shadow" : "text-slate-400 hover:text-white"
-          }`}
-        >
-          <Mic className="w-4 h-4" />
+        <button type="button" onClick={() => setActiveTab("audio")} className={tabClass(activeTab === "audio")}>
+          <Mic className="w-4 h-4 text-zinc-500" />
           <span>{t.upload.tabAudio}</span>
         </button>
-        <button
-          onClick={() => setActiveTab("text")}
-          className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition ${
-            activeTab === "text" ? "bg-blue-600 text-white shadow" : "text-slate-400 hover:text-white"
-          }`}
-        >
-          <FileText className="w-4 h-4" />
+        <button type="button" onClick={() => setActiveTab("text")} className={tabClass(activeTab === "text")}>
+          <FileText className="w-4 h-4 text-zinc-500" />
           <span>{t.upload.tabText}</span>
         </button>
-        <button
-          onClick={() => setActiveTab("whatsapp")}
-          className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm transition border ${
-            activeTab === "whatsapp"
-              ? "bg-emerald-600 text-white shadow border-emerald-400"
-              : "text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20"
-          }`}
-        >
-          <MessageCircle className="w-4 h-4 text-emerald-400" />
+        <button type="button" onClick={() => setActiveTab("whatsapp")} className={tabClass(activeTab === "whatsapp")}>
+          <MessageCircle className="w-4 h-4 text-zinc-500" />
           <span>{t.upload.tabWhatsapp}</span>
         </button>
       </div>
@@ -157,7 +142,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       {activeTab === "image" && (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-guard-600 hover:border-blue-500 rounded-xl p-8 text-center cursor-pointer transition bg-guard-900/50 hover:bg-guard-900/80"
+          className="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50"
         >
           <input
             type="file"
@@ -167,16 +152,16 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
             onChange={(e) => setImageFile(e.target.files?.[0] || null)}
           />
           <div className="flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-              <UploadCloud className="w-7 h-7" />
+            <div className="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
+              <UploadCloud className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">{t.upload.dropImagePrompt}</p>
-              <p className="text-xs text-slate-400 mt-1">{t.upload.dropImageHint}</p>
+              <p className="text-sm font-medium text-zinc-900">{t.upload.dropImagePrompt}</p>
+              <p className="text-xs text-zinc-500 mt-1">{t.upload.dropImageHint}</p>
             </div>
             {imageFile && (
-              <div className="mt-3 p-2 bg-guard-800 rounded-lg border border-guard-600 text-xs text-blue-300 font-mono flex items-center gap-2">
-                <FileCheck className="w-4 h-4 text-green-400" />
+              <div className="mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
+                <FileCheck className="w-4 h-4 text-emerald-700" />
                 <span>{imageFile.name}</span>
               </div>
             )}
@@ -188,7 +173,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       {activeTab === "audio" && (
         <div
           onClick={() => audioInputRef.current?.click()}
-          className="border-2 border-dashed border-guard-600 hover:border-purple-500 rounded-xl p-8 text-center cursor-pointer transition bg-guard-900/50 hover:bg-guard-900/80"
+          className="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50"
         >
           <input
             type="file"
@@ -198,16 +183,16 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
             onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
           />
           <div className="flex flex-col items-center gap-3">
-            <div className="w-14 h-14 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-              <Mic className="w-7 h-7" />
+            <div className="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
+              <Mic className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-semibold text-slate-200">{t.upload.dropAudioPrompt}</p>
-              <p className="text-xs text-slate-400 mt-1">{t.upload.dropAudioHint}</p>
+              <p className="text-sm font-medium text-zinc-900">{t.upload.dropAudioPrompt}</p>
+              <p className="text-xs text-zinc-500 mt-1">{t.upload.dropAudioHint}</p>
             </div>
             {audioFile && (
-              <div className="mt-3 p-2 bg-guard-800 rounded-lg border border-guard-600 text-xs text-purple-300 font-mono flex items-center gap-2">
-                <FileCheck className="w-4 h-4 text-green-400" />
+              <div className="mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
+                <FileCheck className="w-4 h-4 text-emerald-700" />
                 <span>{audioFile.name}</span>
               </div>
             )}
@@ -217,14 +202,14 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
 
       {/* Tab 3: Text */}
       {activeTab === "text" && (
-        <div className="space-y-3">
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t.upload.tabText}</label>
+        <div className="space-y-2">
+          <label className="block text-xs font-medium text-zinc-600">{t.upload.tabText}</label>
           <textarea
             rows={4}
             value={textInput}
             onChange={(e) => setTextInput(e.target.value)}
             placeholder={t.upload.pastePlaceholder}
-            className="w-full bg-guard-900 border border-guard-600 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition"
+            className="w-full bg-white border border-zinc-300 rounded-lg p-3 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900 transition"
           />
         </div>
       )}
@@ -232,46 +217,43 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       {/* Tab 4: WhatsApp Bot Simulator */}
       {activeTab === "whatsapp" && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl">
+          <div className="flex items-center justify-between p-3.5 bg-zinc-50 border border-zinc-200 rounded-lg gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
-                <MessageCircle className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700 shrink-0">
+                <MessageCircle className="w-4 h-4" />
               </div>
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm text-white">{t.upload.waTitle}</span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                </div>
-                <p className="text-[11px] text-emerald-300/80">{t.upload.waSubtitle}</p>
+                <p className="font-medium text-sm text-zinc-900">{t.upload.waTitle}</p>
+                <p className="text-xs text-zinc-500">{t.upload.waSubtitle}</p>
               </div>
             </div>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 font-mono hidden sm:inline-block">
-              Webhook: /api/whatsapp/webhook
+            <span className="text-[11px] px-2 py-0.5 rounded bg-white border border-zinc-200 text-zinc-600 font-mono hidden sm:inline-block shrink-0">
+              /api/whatsapp/webhook
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-400 font-medium">{t.upload.waPresetsLabel}</span>
+            <span className="text-xs text-zinc-500 font-medium">{t.upload.waPresetsLabel}</span>
             <button
               type="button"
               onClick={() => setWaInput(WA_PRESETS.kyc)}
-              className="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition"
+              className="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition"
             >
-              🏦 {t.upload.waPresetKyc}
+              {t.upload.waPresetKyc}
             </button>
             <button
               type="button"
               onClick={() => setWaInput(WA_PRESETS.electricity)}
-              className="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition"
+              className="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition"
             >
-              ⚡ {t.upload.waPresetElectricity}
+              {t.upload.waPresetElectricity}
             </button>
             <button
               type="button"
               onClick={() => setWaInput(WA_PRESETS.arrest)}
-              className="text-xs px-2.5 py-1 rounded-full bg-guard-700 hover:bg-emerald-600/30 border border-guard-600 hover:border-emerald-500 text-slate-200 transition"
+              className="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition"
             >
-              🚨 {t.upload.waPresetArrest}
+              {t.upload.waPresetArrest}
             </button>
           </div>
 
@@ -281,13 +263,13 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               value={waInput}
               onChange={(e) => setWaInput(e.target.value)}
               placeholder={t.upload.waPlaceholder}
-              className="w-full bg-guard-900 border border-guard-600 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
+              className="w-full bg-white border border-zinc-300 rounded-lg p-3 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-900 transition"
             />
             <button
               type="button"
               onClick={handleWhatsAppSend}
               disabled={waSending}
-              className="w-full py-3 px-4 rounded-xl font-bold text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 transition duration-200 cursor-pointer disabled:opacity-50"
+              className="w-full py-2.5 px-4 rounded-lg font-medium text-sm bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center gap-2 transition cursor-pointer disabled:opacity-50"
             >
               {waSending ? (
                 <>
@@ -305,30 +287,29 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
 
           {/* Simulated WhatsApp Chat Window */}
           {waChat && (
-            <div className="rounded-xl bg-[#0b141a] border border-guard-700 p-4 space-y-4 max-h-[450px] overflow-y-auto">
+            <div className="rounded-lg bg-zinc-50 border border-zinc-200 p-4 space-y-4 max-h-[450px] overflow-y-auto">
               <div className="flex justify-center">
-                <span className="text-[10px] text-slate-400 bg-guard-900 px-3 py-1 rounded-full border border-guard-700">
-                  Today • End-to-End Encrypted Simulation
+                <span className="text-[11px] text-zinc-500 bg-white px-2.5 py-0.5 rounded-md border border-zinc-200">
+                  Simulated Forward
                 </span>
               </div>
 
               {/* User Forwarded Message */}
               <div className="flex justify-end">
-                <div className="max-w-[85%] sm:max-w-[70%] bg-[#005c4b] text-[#e9edef] p-3 rounded-2xl rounded-tr-sm shadow text-xs sm:text-sm">
-                  <p className="whitespace-pre-wrap">{waChat.userText}</p>
-                  <div className="text-[10px] text-emerald-200/70 text-right mt-1">✓✓ Forwarded</div>
+                <div className="max-w-[85%] sm:max-w-[75%] bg-zinc-900 text-zinc-100 p-3 rounded-lg rounded-tr-none text-xs sm:text-sm">
+                  <p className="whitespace-pre-wrap leading-relaxed">{waChat.userText}</p>
+                  <div className="text-[10px] text-zinc-400 text-right mt-1">Forwarded</div>
                 </div>
               </div>
 
               {/* Bot Reply */}
               <div className="flex justify-start">
-                <div className="max-w-[95%] sm:max-w-[85%] bg-[#202c33] text-[#d1d7db] p-3.5 rounded-2xl rounded-tl-sm border border-emerald-500/30 shadow text-xs sm:text-sm">
-                  <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs pb-1.5 border-b border-guard-700 mb-2">
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>CyberGuard AI Official Defender</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Verified Bot</span>
+                <div className="max-w-[95%] sm:max-w-[85%] bg-white text-zinc-800 p-3.5 rounded-lg rounded-tl-none border border-zinc-200 text-xs sm:text-sm">
+                  <div className="flex items-center gap-1.5 text-zinc-900 font-semibold text-xs pb-2 border-b border-zinc-100 mb-2">
+                    <ShieldCheck className="w-3.5 h-3.5 text-zinc-700" />
+                    <span>CyberGuard AI Responder</span>
                   </div>
-                  <pre className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-slate-200">
+                  <pre className="whitespace-pre-wrap font-sans text-xs leading-relaxed text-zinc-700">
                     {waChat.botReply}
                   </pre>
                 </div>
@@ -336,19 +317,19 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
 
               {/* 1-Tap Block Fraudster Action if High Risk */}
               {waChat.isDanger && !isBlocked && (
-                <div className="p-3.5 bg-red-950/60 border border-red-500/50 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg shadow-red-950/50">
+                <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <ShieldAlert className="w-5 h-5 text-red-400 shrink-0 animate-pulse" />
+                    <ShieldAlert className="w-4 h-4 text-red-700 shrink-0" />
                     <div>
-                      <p className="text-xs font-bold text-red-300">{t.upload.waDangerBadge}</p>
-                      <p className="text-[11px] text-red-200/80">Break scammer psychological pressure loop & freeze contact</p>
+                      <p className="text-xs font-semibold text-red-900">{t.upload.waDangerBadge}</p>
+                      <p className="text-[11px] text-red-700">Break scammer contact loop and log evidence</p>
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={handleBlockFraudster}
                     disabled={blocking}
-                    className="w-full sm:w-auto px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-600/30 transition shrink-0 cursor-pointer disabled:opacity-50"
+                    className="w-full sm:w-auto px-3.5 py-2 rounded-md bg-red-700 hover:bg-red-800 text-white font-medium text-xs flex items-center justify-center gap-1.5 transition shrink-0 cursor-pointer disabled:opacity-50"
                   >
                     {blocking ? (
                       <>
@@ -366,8 +347,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               )}
 
               {isBlocked && (
-                <div className="p-3.5 bg-emerald-950/60 border border-emerald-500/50 rounded-xl flex items-center gap-2.5 text-xs text-emerald-300 font-semibold shadow-lg shadow-emerald-950/50">
-                  <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-2 text-xs text-emerald-900 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
                   <span>{t.upload.waBlockedBadge}</span>
                 </div>
               )}
@@ -379,18 +360,19 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       {/* Action Button for non-whatsapp tabs */}
       {activeTab !== "whatsapp" && (
         <button
+          type="button"
           onClick={handleSubmit}
           disabled={isLoading}
-          className="w-full py-4 px-6 rounded-xl font-bold text-base bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition duration-200 cursor-pointer disabled:opacity-50"
+          className="w-full py-3 px-5 rounded-lg font-medium text-sm bg-zinc-900 hover:bg-zinc-800 text-white flex items-center justify-center gap-2 transition cursor-pointer disabled:opacity-50"
         >
           {isLoading ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
               <span>{t.upload.scanningButton}</span>
             </>
           ) : (
             <>
-              <Scan className="w-5 h-5" />
+              <Scan className="w-4 h-4" />
               <span>{t.upload.scanButton}</span>
             </>
           )}
@@ -399,4 +381,3 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
     </section>
   );
 };
-
