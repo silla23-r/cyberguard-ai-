@@ -22,7 +22,13 @@ COERCION_TRIGGERS = [
     ("isolate", "Instructions to stay in a locked room alone"),
     ("kyc", "Threat to permanently block bank account within 2 hours"),
     ("electricity", "Threat of immediate power cutoff tonight"),
-    ("fine", "Demanding immediate settlement payment via UPI or crypto")
+    ("fine", "Demanding immediate settlement payment via UPI or crypto"),
+    ("anydesk", "Coercing victim to install AnyDesk remote-access app"),
+    ("teamviewer", "Coercing victim to install TeamViewer remote-access app"),
+    ("quicksupport", "Coercing victim to install QuickSupport screen-control app"),
+    ("screen share", "Demanding live screen sharing to expose bank OTPs"),
+    ("unknown apps", "Instructing victim to bypass Android security and sideload APK"),
+    (".apk", "Directing victim to install unverified Android APK file")
 ]
 
 def analyze_transcript_heuristics(transcript: str) -> CoercionAnalysis:

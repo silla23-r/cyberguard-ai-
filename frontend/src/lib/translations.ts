@@ -18,12 +18,15 @@ export interface TranslationDict {
   upload: {
     tabImage: string;
     tabAudio: string;
+    tabApk: string;
     tabText: string;
     tabWhatsapp: string;
     dropImagePrompt: string;
     dropImageHint: string;
     dropAudioPrompt: string;
     dropAudioHint: string;
+    dropApkPrompt: string;
+    dropApkHint: string;
     pastePlaceholder: string;
     scanButton: string;
     scanningButton: string;
@@ -34,6 +37,7 @@ export interface TranslationDict {
     waPresetKyc: string;
     waPresetElectricity: string;
     waPresetArrest: string;
+    waPresetApk: string;
     waPlaceholder: string;
     waSendBtn: string;
     waAnalyzingBtn: string;
@@ -92,12 +96,15 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
     upload: {
       tabImage: "Screenshot / QR",
       tabAudio: "Call Recording",
+      tabApk: "APK / File",
       tabText: "Pasted Message",
       tabWhatsapp: "WhatsApp Bot",
       dropImagePrompt: "Click to upload or drag & drop suspicious screenshot or payment QR",
       dropImageHint: "Supports PNG, JPG, WEBP (Max 10MB)",
       dropAudioPrompt: "Upload suspicious call recording or audio note",
       dropAudioHint: "Supports MP3, WAV, M4A, OGG (Max 25MB)",
+      dropApkPrompt: "Upload suspicious Android .apk file sent via WhatsApp or SMS",
+      dropApkHint: "Safely unpacks manifest permissions without executing (Max 25MB)",
       pastePlaceholder: "Paste suspicious SMS, WhatsApp message, email, or UPI request note here...",
       scanButton: "Scan & Analyze with CyberGuard",
       scanningButton: "Analyzing submission...",
@@ -108,6 +115,7 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       waPresetKyc: "SBI KYC Scam",
       waPresetElectricity: "Electricity Disconnect",
       waPresetArrest: "Digital Arrest Threat",
+      waPresetApk: "RTO / KYC APK",
       waPlaceholder: "Type or select a suspicious WhatsApp message...",
       waSendBtn: "Simulate Message",
       waAnalyzingBtn: "Analyzing...",
@@ -164,12 +172,15 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
     upload: {
       tabImage: "स्क्रीनशॉट / QR",
       tabAudio: "कॉल रिकॉर्डिंग",
+      tabApk: "APK / फ़ाइल",
       tabText: "मैसेज पेस्ट करें",
       tabWhatsapp: "व्हाट्सएप बॉट",
       dropImagePrompt: "संदिग्ध स्क्रीनशॉट या QR कोड अपलोड करने के लिए क्लिक करें या ड्रैग करें",
       dropImageHint: "PNG, JPG, WEBP समर्थित (अधिकतम 10MB)",
       dropAudioPrompt: "संदिग्ध कॉल रिकॉर्डिंग या ऑडियो नोट अपलोड करें",
       dropAudioHint: "MP3, WAV, M4A, OGG समर्थित (अधिकतम 25MB)",
+      dropApkPrompt: "व्हाट्सएप या SMS से मिली संदिग्ध Android .apk फ़ाइल अपलोड करें",
+      dropApkHint: "फ़ाइल को चलाए बिना सुरक्षित रूप से अनुमतियों की जांच करता है (अधिकतम 25MB)",
       pastePlaceholder: "संदिग्ध SMS, व्हाट्सएप मैसेज, ईमेल या UPI नोट यहाँ पेस्ट करें...",
       scanButton: "साइबरगार्ड AI से तुरंत जांच करें",
       scanningButton: "डेटा और साइबर रिकॉर्ड्स की जांच हो रही है...",
@@ -180,6 +191,7 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       waPresetKyc: "SBI KYC स्कैम",
       waPresetElectricity: "बिजली बिल डिस्कनेक्ट",
       waPresetArrest: "डिजिटल अरेस्ट धमकी",
+      waPresetApk: "RTO / KYC APK स्कैम",
       waPlaceholder: "संदिग्ध व्हाट्सएप संदेश लिखें या चुनें...",
       waSendBtn: "मैसेज भेजें",
       waAnalyzingBtn: "जांच जारी है...",
@@ -236,12 +248,15 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
     upload: {
       tabImage: "స్క్రీన్‌షాట్ / QR",
       tabAudio: "కాల్ రికార్డింగ్",
+      tabApk: "APK / ఫైల్",
       tabText: "సందేశం అతికించండి",
       tabWhatsapp: "వాట్సాప్ బాట్",
       dropImagePrompt: "స్క్రీన్‌షాట్ లేదా QR కోడ్‌ను అప్‌లోడ్ చేయడానికి క్లిక్ చేయండి లేదా డ్రాగ్ చేయండి",
       dropImageHint: "PNG, JPG, WEBP సపోర్ట్ (గరిష్టంగా 10MB)",
       dropAudioPrompt: "బెదిరింపు కాల్ రికార్డింగ్ లేదా ఆడియోను అప్‌లోడ్ చేయండి",
       dropAudioHint: "MP3, WAV, M4A, OGG సపోర్ట్ (గరిష్టంగా 25MB)",
+      dropApkPrompt: "వాట్సాప్ లేదా SMS ద్వారా వచ్చిన అనుమానాస్పద Android .apk ఫైల్‌ను అప్‌లోడ్ చేయండి",
+      dropApkHint: "యాప్ ఇన్‌స్టాల్ చేయకుండా సురక్షితంగా అనుమతులను పరిశీలిస్తుంది (గరిష్టంగా 25MB)",
       pastePlaceholder: "అనుమానాస్పద SMS, వాట్సాప్ సందేశం లేదా UPI నోట్‌ను ఇక్కడ పేస్ట్ చేయండి...",
       scanButton: "సైబర్‌గార్డ్ AI తో స్కాన్ & విశ్లేషించండి",
       scanningButton: "డేటాను విశ్లేషిస్తోంది...",
@@ -252,6 +267,7 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       waPresetKyc: "SBI KYC మోసం",
       waPresetElectricity: "కరెంట్ బిల్లు డిస్‌కనెక్ట్",
       waPresetArrest: "డిజిటల్ అరెస్ట్ బెదిరింపు",
+      waPresetApk: "RTO / KYC APK మోసం",
       waPlaceholder: "వాట్సాప్ సందేశాన్ని నమోదు చేయండి...",
       waSendBtn: "సందేశం పంపండి",
       waAnalyzingBtn: "పరిశీలిస్తోంది...",
@@ -308,12 +324,15 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
     upload: {
       tabImage: "ஸ்கிரீன்ஷாட் / QR",
       tabAudio: "அழைப்பு பதிவு",
+      tabApk: "APK / கோப்பு",
       tabText: "செய்தியை ஒட்டுக",
       tabWhatsapp: "வாட்ஸ்அப் பாட்",
       dropImagePrompt: "ஸ்கிரீன்ஷாட் அல்லது QR குறியீட்டை பதிவேற்ற கிளிக் செய்யவும் அல்லது இழுக்கவும்",
       dropImageHint: "PNG, JPG, WEBP ஆதரிக்கப்படுகிறது (அதிகபட்சம் 10MB)",
       dropAudioPrompt: "சந்தேகத்திற்குரிய அழைப்பு ஆடியோவை பதிவேற்றவும்",
       dropAudioHint: "MP3, WAV, M4A, OGG ஆதரிக்கப்படுகிறது (அதிகபட்சம் 25MB)",
+      dropApkPrompt: "வாட்ஸ்அப் அல்லது SMS மூலம் வந்த சந்தேகத்திற்குரிய Android .apk கோப்பை பதிவேற்றவும்",
+      dropApkHint: "செயலியை நிறுவாமல் பாதுகாப்பாக அனுமதிகளைச் சோதிக்கும் (அதிகபட்சம் 25MB)",
       pastePlaceholder: "சந்தேகத்திற்குரிய SMS, வாட்ஸ்அப் செய்தி அல்லது UPI குறிப்பை இங்கே ஒட்டவும்...",
       scanButton: "சைபர்கார்ட் AI மூலம் ஸ்கேன் செய்து பகுப்பாய்வு செய்க",
       scanningButton: "பகுப்பாய்வு செய்யப்படுகிறது...",
@@ -324,6 +343,7 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       waPresetKyc: "SBI KYC மோசடி",
       waPresetElectricity: "மின் கட்டண துண்டிப்பு",
       waPresetArrest: "டிஜிட்டல் கைது மிரட்டல்",
+      waPresetApk: "RTO / KYC APK மோசடி",
       waPlaceholder: "வாட்ஸ்அப் செய்தியை உள்ளிடவும்...",
       waSendBtn: "செய்தி அனுப்புக",
       waAnalyzingBtn: "ஆராய்கிறது...",
@@ -380,12 +400,15 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
     upload: {
       tabImage: "স্ক্রিনশট / QR",
       tabAudio: "কল রেকর্ডিং",
+      tabApk: "APK / ফাইল",
       tabText: "মেসেজ পেস্ট করুন",
       tabWhatsapp: "হোয়াটসঅ্যাপ বট",
       dropImagePrompt: "স্ক্রিনশট বা QR কোড আপলোড করতে ক্লিক করুন বা ড্র্যাগ করুন",
       dropImageHint: "PNG, JPG, WEBP সমর্থিত (সর্বোচ্চ 10MB)",
       dropAudioPrompt: "সন্দেহজনক কল রেকর্ডিং বা অডিও আপলোড করুন",
       dropAudioHint: "MP3, WAV, M4A, OGG সমর্থিত (সর্বোচ্চ 25MB)",
+      dropApkPrompt: "হোয়াটসঅ্যাপ বা SMS থেকে পাওয়া সন্দেহজনক Android .apk ফাইল আপলোড করুন",
+      dropApkHint: "ফাইল না চালিয়েই নিরাপদে বিপজ্জনক পারমিশন পরীক্ষা করে (সর্বোচ্চ 25MB)",
       pastePlaceholder: "সন্দেহজনক SMS, হোয়াটসঅ্যাপ বার্তা বা UPI নোট এখানে পেস্ট করুন...",
       scanButton: "সাইবারগার্ড AI দিয়ে স্ক্যান ও বিশ্লেষণ করুন",
       scanningButton: "তথ্য বিশ্লেষণ করা হচ্ছে...",
@@ -396,6 +419,7 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       waPresetKyc: "SBI KYC স্ক্যাম",
       waPresetElectricity: "বিদ্যুৎ বিল সংযোগ বিচ্ছিন্ন",
       waPresetArrest: "ডিজিটাল অ্যারেস্ট হুমকি",
+      waPresetApk: "RTO / KYC APK স্ক্যাম",
       waPlaceholder: "হোয়াটসঅ্যাপ মেসেজ লিখুন বা নির্বাচন করুন...",
       waSendBtn: "বার্তা পাঠান",
       waAnalyzingBtn: "বিশ্লেষণ চলছে...",
@@ -440,4 +464,3 @@ export function getTranslation(lang: string): TranslationDict {
   const code = (lang as SupportedLanguage) in translations ? (lang as SupportedLanguage) : "en";
   return translations[code];
 }
-

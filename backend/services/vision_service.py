@@ -19,8 +19,31 @@ logger = logging.getLogger(__name__)
 # Heuristic scam regexes for offline fallback
 PHONE_REGEX = r"(?:\+91[\-\s]?)?[6789]\d{9}"
 
+REMOTE_ACCESS_TOOLS = [
+    ("anydesk", "AnyDesk"),
+    ("teamviewer", "TeamViewer"),
+    ("quicksupport", "TeamViewer QuickSupport"),
+    ("rustdesk", "RustDesk"),
+    ("ultraviewer", "UltraViewer"),
+    ("airdroid", "AirDroid"),
+    ("hoptodesk", "HopToDesk"),
+    ("screen share", "Screen Sharing"),
+    ("share your screen", "Screen Sharing"),
+]
+
+def detect_remote_access_tools(text: str) -> List[str]:
+    """Identifies remote-access / screen-mirroring coercion tools mentioned in text."""
+    if not text:
+        return []
+    text_lower = text.lower()
+    detected: List[str] = []
+    for keyword, display_name in REMOTE_ACCESS_TOOLS:
+        if keyword in text_lower and display_name not in detected:
+            detected.append(display_name)
+    return detected
+
 def analyze_text_heuristics(text: str) -> Dict[str, Any]:
-    """Extracts brand impersonation, urgency, and contact info from raw message text."""
+    """Extracts brand impersonation, urgency, remote-access coercion, and contact info from raw message text."""
     text_lower = text.lower()
     
     brand = None
@@ -40,6 +63,10 @@ def analyze_text_heuristics(text: str) -> Dict[str, Any]:
         brand = "Amazon"
     elif "electricity" in text_lower or "power" in text_lower or "bescom" in text_lower:
         brand = "State Electricity Board (BESCOM)"
+    elif "rto" in text_lower or "challan" in text_lower or "parivahan" in text_lower:
+        brand = "Traffic Police / RTO e-Challan"
+    elif "kisan" in text_lower or "pm-kisan" in text_lower:
+        brand = "PM-Kisan Govt Scheme"
     elif "police" in text_lower or "cbi" in text_lower or "customs" in text_lower or "cyber crime" in text_lower:
         brand = "Law Enforcement / Police"
     elif "fedex" in text_lower or "courier" in text_lower:
@@ -58,6 +85,12 @@ def analyze_text_heuristics(text: str) -> Dict[str, Any]:
         urgency.append("Forced KYC / credential verification demand")
     if "within 24 hours" in text_lower or "tonight" in text_lower or "2 hours" in text_lower:
         urgency.append("Tight time-limit countdown pressure")
+    if "unknown apps" in text_lower or "unknown sources" in text_lower or ".apk" in text_lower:
+        urgency.append("Coercion to sideload unverified .apk package outside official Play Store")
+
+    remote_tools = detect_remote_access_tools(text)
+    if remote_tools:
+        urgency.append(f"Remote screen-control coercion ({', '.join(remote_tools)})")
 
     import re
     phones = re.findall(PHONE_REGEX, text)
@@ -65,7 +98,8 @@ def analyze_text_heuristics(text: str) -> Dict[str, Any]:
     return {
         "impersonated_brand": brand,
         "urgency_signals": urgency,
-        "phone_numbers": list(dict.fromkeys(phones))
+        "phone_numbers": list(dict.fromkeys(phones)),
+        "remote_access_tools": remote_tools,
     }
 
 def _heuristic_vision_fallback(text: str) -> Dict[str, Any]:
@@ -193,11 +227,14 @@ async def analyze_image(image_bytes: bytes, gemini_api_key: str = "") -> Forensi
             evidence.urgency_signals.extend(heuristics.get("urgency_signals", []))
             evidence.phone_numbers.extend(heuristics.get("phone_numbers", []))
     
-    # Step 3: Deduplicate and normalize
+    # Step 3: Deduplicate, normalize, and check remote-access coercion
+    if evidence.raw_text:
+        evidence.remote_access_tools_detected.extend(detect_remote_access_tools(evidence.raw_text))
     evidence.extracted_urls = list(dict.fromkeys(evidence.extracted_urls))
     evidence.phone_numbers = list(dict.fromkeys(evidence.phone_numbers))
     evidence.upi_vpas = list(dict.fromkeys(evidence.upi_vpas))
     evidence.urgency_signals = list(dict.fromkeys(evidence.urgency_signals))
+    evidence.remote_access_tools_detected = list(dict.fromkeys(evidence.remote_access_tools_detected))
     
     return evidence
 

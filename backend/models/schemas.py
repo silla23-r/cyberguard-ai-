@@ -10,6 +10,8 @@ class ScamArchetype(str, Enum):
     DIGITAL_ARREST = "DIGITAL_ARREST"
     UPI_COLLECT_FRAUD = "UPI_COLLECT_FRAUD"
     PHISHING_LINK = "PHISHING_LINK"
+    APK_TROJAN_MALWARE = "APK_TROJAN_MALWARE"
+    REMOTE_ACCESS_SCAM = "REMOTE_ACCESS_SCAM"
     FAKE_ELECTRICITY_BILL = "FAKE_ELECTRICITY_BILL"
     JOB_TASK_SCAM = "JOB_TASK_SCAM"
     LOTTERY_PRIZE_SCAM = "LOTTERY_PRIZE_SCAM"
@@ -17,6 +19,20 @@ class ScamArchetype(str, Enum):
     SEXTORTION_BLACKMAIL = "SEXTORTION_BLACKMAIL"
     LEGITIMATE_SAFE = "LEGITIMATE_SAFE"
     UNKNOWN_SUSPICIOUS = "UNKNOWN_SUSPICIOUS"
+
+class ApkInspectionResult(BaseModel):
+    is_valid_apk: bool = False
+    filename: Optional[str] = None
+    package_name: Optional[str] = None
+    sha256_hash: Optional[str] = None
+    file_size_bytes: int = 0
+    dangerous_permissions: List[str] = Field(default_factory=list)
+    sms_interception_risk: bool = False
+    accessibility_abuse_risk: bool = False
+    sideload_dropper_risk: bool = False
+    targeted_banking_apps: List[str] = Field(default_factory=list)
+    embedded_urls: List[str] = Field(default_factory=list)
+    risk_flags: List[str] = Field(default_factory=list)
 
 class ForensicEvidence(BaseModel):
     extracted_urls: List[str] = Field(default_factory=list, description="Extracted web links")
@@ -27,6 +43,8 @@ class ForensicEvidence(BaseModel):
     upi_vpas: List[str] = Field(default_factory=list, description="Extracted UPI addresses (e.g. name@okhdfcbank)")
     urgency_signals: List[str] = Field(default_factory=list, description="Identified high-pressure psychological phrases")
     raw_text: Optional[str] = Field(None, description="Extracted OCR or transcript text")
+    apk_analysis: Optional[ApkInspectionResult] = Field(None, description="Static binary inspection results for uploaded APK files")
+    remote_access_tools_detected: List[str] = Field(default_factory=list, description="Detected remote screen-sharing coercion tools")
     pii_redacted_count: int = Field(0, description="Count of sensitive PII entities redacted under DPDP Act")
     pii_categories_redacted: List[str] = Field(default_factory=list, description="Categories of masked citizen PII")
     adversarial_injection_detected: bool = Field(False, description="Flagged prompt injection or jailbreak attempt")

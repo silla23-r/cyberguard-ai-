@@ -22,6 +22,8 @@ class AgentState(TypedDict):
     image_bytes: Optional[bytes]
     audio_bytes: Optional[bytes]
     audio_filename: Optional[str]
+    apk_bytes: Optional[bytes]
+    apk_filename: Optional[str]
     raw_text_input: Optional[str]
     
     # Processing Intermediate Outputs

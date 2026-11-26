@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send, ShieldAlert, ShieldCheck, UserX } from "lucide-react";
+import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send, ShieldAlert, ShieldCheck, UserX, Package } from "lucide-react";
 import { simulateWhatsAppMessage, blockWhatsAppFraudster } from "@/lib/api";
 import { AnalysisResponse } from "@/lib/types";
 import { getTranslation } from "@/lib/translations";
@@ -16,14 +16,16 @@ interface UploadZoneProps {
 const WA_PRESETS = {
   kyc: "URGENT: Your SBI YONO Account will be blocked today due to pending KYC verification. Please click here immediately to update PAN card: http://sbi-kyc-verify-portal.in/login or call officer at +919876543210",
   electricity: "Dear Consumer, Electricity power will be disconnected tonight at 9:30 PM from electricity office because your previous month bill was not updated. Please immediately contact our officer at +919876543210 or pay to bescom@okaxis",
-  arrest: "CBI OFFICER R.K. SHARMA: A parcel sent to Cambodia under your Aadhaar number contains 5 fake passports and 150 grams of MDMA. Supreme Court has issued an arrest warrant. Do not disconnect this video call or local police will reach your house in 15 minutes."
+  arrest: "CBI OFFICER R.K. SHARMA: A parcel sent to Cambodia under your Aadhaar number contains 5 fake passports and 150 grams of MDMA. Supreme Court has issued an arrest warrant. Do not disconnect this video call or local police will reach your house in 15 minutes.",
+  apk: "TRAFFIC NOTICE: Pending e-Challan Rs. 2,000 against vehicle DL-09. Download and open RTO_eChallan_Pay.apk immediately and allow Install Unknown Apps, or share your AnyDesk code with inspector at +919876543210."
 };
 
 export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, selectedLang, onAnalysisResult }) => {
   const t = getTranslation(selectedLang);
-  const [activeTab, setActiveTab] = useState<"image" | "audio" | "text" | "whatsapp">("image");
+  const [activeTab, setActiveTab] = useState<"image" | "audio" | "apk" | "text" | "whatsapp">("image");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [apkFile, setApkFile] = useState<File | null>(null);
   const [textInput, setTextInput] = useState("");
 
   // WhatsApp Simulator State
@@ -49,16 +51,18 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
+  const apkInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = () => {
-    if (!imageFile && !audioFile && !textInput.trim()) {
-      alert("Please upload a screenshot, select an audio file, or paste a message.");
+    if (!imageFile && !audioFile && !apkFile && !textInput.trim()) {
+      alert("Please upload a screenshot, audio file, APK file, or paste a message.");
       return;
     }
 
     const formData = new FormData();
     if (imageFile) formData.append("image", imageFile);
     if (audioFile) formData.append("audio", audioFile);
+    if (apkFile) formData.append("apk_file", apkFile);
     if (textInput.trim()) formData.append("text", textInput.trim());
     formData.append("language", selectedLang);
 
@@ -119,7 +123,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
   return (
     <section className="bg-white rounded-xl border border-zinc-200 p-5 sm:p-6 space-y-5">
       {/* Segmented Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 p-1 bg-zinc-100 rounded-lg border border-zinc-200/70">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-1 p-1 bg-zinc-100 rounded-lg border border-zinc-200/70">
         <button type="button" onClick={() => setActiveTab("image")} className={tabClass(activeTab === "image")}>
           <ImageIcon className="w-4 h-4 text-zinc-500" />
           <span>{t.upload.tabImage}</span>
@@ -127,6 +131,10 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
         <button type="button" onClick={() => setActiveTab("audio")} className={tabClass(activeTab === "audio")}>
           <Mic className="w-4 h-4 text-zinc-500" />
           <span>{t.upload.tabAudio}</span>
+        </button>
+        <button type="button" onClick={() => setActiveTab("apk")} className={tabClass(activeTab === "apk")}>
+          <Package className="w-4 h-4 text-zinc-500" />
+          <span>{t.upload.tabApk}</span>
         </button>
         <button type="button" onClick={() => setActiveTab("text")} className={tabClass(activeTab === "text")}>
           <FileText className="w-4 h-4 text-zinc-500" />
@@ -200,7 +208,38 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
         </div>
       )}
 
-      {/* Tab 3: Text */}
+      {/* Tab 3: Android APK / File */}
+      {activeTab === "apk" && (
+        <div
+          onClick={() => apkInputRef.current?.click()}
+          className="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50"
+        >
+          <input
+            type="file"
+            ref={apkInputRef}
+            accept=".apk,application/vnd.android.package-archive"
+            className="hidden"
+            onChange={(e) => setApkFile(e.target.files?.[0] || null)}
+          />
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
+              <Package className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-zinc-900">{t.upload.dropApkPrompt}</p>
+              <p className="text-xs text-zinc-500 mt-1">{t.upload.dropApkHint}</p>
+            </div>
+            {apkFile && (
+              <div className="mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
+                <FileCheck className="w-4 h-4 text-emerald-700" />
+                <span>{apkFile.name}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 4: Text */}
       {activeTab === "text" && (
         <div className="space-y-2">
           <label className="block text-xs font-medium text-zinc-600">{t.upload.tabText}</label>
@@ -214,7 +253,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
         </div>
       )}
 
-      {/* Tab 4: WhatsApp Bot Simulator */}
+      {/* Tab 5: WhatsApp Bot Simulator */}
       {activeTab === "whatsapp" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between p-3.5 bg-zinc-50 border border-zinc-200 rounded-lg gap-3">
@@ -254,6 +293,13 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
               className="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition"
             >
               {t.upload.waPresetArrest}
+            </button>
+            <button
+              type="button"
+              onClick={() => setWaInput(WA_PRESETS.apk)}
+              className="text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition"
+            >
+              {t.upload.waPresetApk}
             </button>
           </div>
 

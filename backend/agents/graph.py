@@ -29,6 +29,7 @@ from tools.virustotal import scan_url_virustotal
 from tools.safe_browsing import check_url_safebrowsing
 from tools.upi_validator import validate_vpa, extract_vpas_from_text
 from tools.qr_decoder import parse_upi_intent
+from tools.apk_inspector import inspect_apk_bytes, infer_apk_bait_brand
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,8 @@ async def run_cyberguard_pipeline(
     image_bytes: Optional[bytes] = None,
     audio_bytes: Optional[bytes] = None,
     audio_filename: str = "audio.mp3",
+    apk_bytes: Optional[bytes] = None,
+    apk_filename: str = "uploaded_app.apk",
     raw_text: str = "",
     user_language: str = "en"
 ) -> AsyncGenerator[Dict[str, Any], None]:
@@ -60,6 +63,8 @@ async def run_cyberguard_pipeline(
         "image_bytes": image_bytes,
         "audio_bytes": audio_bytes,
         "audio_filename": audio_filename,
+        "apk_bytes": apk_bytes,
+        "apk_filename": apk_filename,
         "raw_text_input": raw_text,
         "evidence": ForensicEvidence(),
         "threat_intel": ThreatIntelligence(),
@@ -102,12 +107,13 @@ async def run_cyberguard_pipeline(
                 if upi_parsed.get("payee_vpa"):
                     state["evidence"].upi_vpas.append(upi_parsed["payee_vpa"])
 
-        # Extract brand, urgency, and telephone metadata from text
+        # Extract brand, urgency, remote-access coercion, and telephone metadata from text
         text_findings = analyze_text_heuristics(raw_text)
         if text_findings.get("impersonated_brand"):
             state["evidence"].impersonated_brand = text_findings["impersonated_brand"]
         state["evidence"].urgency_signals.extend(text_findings.get("urgency_signals", []))
         state["evidence"].phone_numbers.extend(text_findings.get("phone_numbers", []))
+        state["evidence"].remote_access_tools_detected.extend(text_findings.get("remote_access_tools", []))
 
         # Evaluate psychological coercion / extortion patterns
         coercion_findings = analyze_transcript_heuristics(raw_text)
@@ -132,6 +138,7 @@ async def run_cyberguard_pipeline(
             state["evidence"].phone_numbers.extend(vis_evidence.phone_numbers)
             state["evidence"].upi_vpas.extend(vis_evidence.upi_vpas)
             state["evidence"].urgency_signals.extend(vis_evidence.urgency_signals)
+            state["evidence"].remote_access_tools_detected.extend(vis_evidence.remote_access_tools_detected)
             if vis_evidence.impersonated_brand:
                 state["evidence"].impersonated_brand = vis_evidence.impersonated_brand
             if vis_evidence.qr_payload:
@@ -158,6 +165,11 @@ async def run_cyberguard_pipeline(
             transcript = audio_res.get("transcript", "")
             if not state["evidence"].raw_text:
                 state["evidence"].raw_text = transcript
+            if transcript:
+                audio_text_findings = analyze_text_heuristics(transcript)
+                state["evidence"].remote_access_tools_detected.extend(
+                    audio_text_findings.get("remote_access_tools", [])
+                )
             
             step3.status = "completed"
             step3.message = f"Acoustic analysis complete. Coercion score: {state['coercion'].coercion_score if state['coercion'] else 0}/100."
@@ -166,6 +178,37 @@ async def run_cyberguard_pipeline(
             step3.status = "failed"
             step3.message = f"Audio analysis error: {e}"
         yield {"type": "step", "step": step3}
+
+    # --- Node 3B: Android APK & Malware Static Inspector ---
+    if apk_bytes is not None:
+        step3b = _create_step(
+            "APK Malware Inspector",
+            "running",
+            f"Statically unpacking '{apk_filename}' to audit AndroidManifest permissions, OTP interceptors, and C2 endpoints..."
+        )
+        state["steps"].append(step3b)
+        yield {"type": "step", "step": step3b}
+
+        try:
+            apk_res = inspect_apk_bytes(apk_bytes, apk_filename)
+            state["evidence"].apk_analysis = apk_res
+            if apk_res.embedded_urls:
+                state["evidence"].extracted_urls.extend(apk_res.embedded_urls)
+            bait_brand = infer_apk_bait_brand(apk_filename)
+            if bait_brand and not state["evidence"].impersonated_brand:
+                state["evidence"].impersonated_brand = bait_brand
+
+            step3b.status = "completed"
+            perm_count = len(apk_res.dangerous_permissions)
+            step3b.message = (
+                f"Static APK pass complete. Package: {apk_res.package_name or 'Unknown'} | "
+                f"Flagged permissions: {perm_count}."
+            )
+        except Exception as e:
+            logger.error(f"APK inspection error: {e}")
+            step3b.status = "failed"
+            step3b.message = f"APK static inspection error: {e}"
+        yield {"type": "step", "step": step3b}
 
     # --- Node 4: Threat Intelligence & Sandbox Agent ---
     step4 = _create_step("Threat Intelligence Agent", "running", "Querying WHOIS registries, VirusTotal, Safe Browsing, and validating UPI VPAs...")
@@ -239,8 +282,17 @@ async def run_cyberguard_pipeline(
             f"CRITICAL ADVERSARIAL ALERT: Prompt injection attempt detected ({patterns_str}). AI security override blocked tampering."
         )
 
+    # Deduplicate remote access tools before scoring
+    state["evidence"].remote_access_tools_detected = list(
+        dict.fromkeys(state["evidence"].remote_access_tools_detected)
+    )
+
     # Compute Cryptographic SHA-256 Chain-of-Custody Seal
-    raw_summary = state["evidence"].raw_text or f"Urls:{len(state['evidence'].extracted_urls)}|VPAs:{len(state['evidence'].upi_vpas)}"
+    apk_sha = state["evidence"].apk_analysis.sha256_hash if state["evidence"].apk_analysis else ""
+    raw_summary = (
+        state["evidence"].raw_text
+        or f"Urls:{len(state['evidence'].extracted_urls)}|VPAs:{len(state['evidence'].upi_vpas)}|APK:{apk_sha[:16]}"
+    )
     sha_hash = compute_evidence_hash(
         session_id=session_id,
         raw_evidence_summary=raw_summary,
@@ -261,7 +313,9 @@ async def run_cyberguard_pipeline(
             "urls": state["evidence"].extracted_urls,
             "phones": state["evidence"].phone_numbers,
             "vpas": state["evidence"].upi_vpas,
-            "qr": state["evidence"].qr_payload
+            "qr": state["evidence"].qr_payload,
+            "apk_sha256": apk_sha or None,
+            "remote_tools": state["evidence"].remote_access_tools_detected,
         }
     )
 

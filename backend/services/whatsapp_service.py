@@ -76,6 +76,15 @@ def format_whatsapp_response(
             lines.append(f"• {r}")
         lines.append("")
 
+    if evidence.apk_analysis and evidence.apk_analysis.dangerous_permissions:
+        perms = ", ".join(evidence.apk_analysis.dangerous_permissions[:5])
+        lines.append(f"📦 *APK Malware Permissions*: `{perms}`")
+        lines.append("")
+    elif evidence.remote_access_tools_detected:
+        tools = ", ".join(evidence.remote_access_tools_detected)
+        lines.append(f"📱 *Remote-Control App Alert*: `{tools}`")
+        lines.append("")
+
     # Add immediate checklist
     if verdict.safety_checklist:
         lines.append("🛡️ *Immediate Next Steps*:")
@@ -117,13 +126,18 @@ async def process_whatsapp_message(
     image_bytes = None
     audio_bytes = None
     audio_filename = "voice_note.mp3"
+    apk_bytes = None
+    apk_filename = "whatsapp_attachment.apk"
 
     if media_url:
         auth = (settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         media_bytes = await download_media(media_url, auth=auth)
         if media_bytes:
             content_type = (media_content_type or "").lower()
-            if "image" in content_type:
+            is_zip_apk = media_bytes[:4] == b"PK\x03\x04" and b"AndroidManifest.xml" in media_bytes[:262144]
+            if "android.package-archive" in content_type or "apk" in content_type or is_zip_apk:
+                apk_bytes = media_bytes
+            elif "image" in content_type:
                 image_bytes = media_bytes
             elif "audio" in content_type or "ogg" in content_type:
                 audio_bytes = media_bytes
@@ -141,6 +155,8 @@ async def process_whatsapp_message(
         image_bytes=image_bytes,
         audio_bytes=audio_bytes,
         audio_filename=audio_filename,
+        apk_bytes=apk_bytes,
+        apk_filename=apk_filename,
         raw_text=incoming_text or "",
         user_language=user_language
     ):

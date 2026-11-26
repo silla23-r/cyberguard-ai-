@@ -30,12 +30,13 @@ async def health_check():
 async def analyze_submission(
     image: Optional[UploadFile] = File(None),
     audio: Optional[UploadFile] = File(None),
+    apk_file: Optional[UploadFile] = File(None),
     text: Optional[str] = Form(None),
     language: Optional[str] = Form("en")
 ):
     """
     Main multimodal analysis endpoint.
-    Accepts screenshot image, audio recording, or text message.
+    Accepts screenshot image, audio recording, Android APK package, or text message.
     """
     session_id = f"CG-{uuid.uuid4().hex[:8].upper()}"
     
@@ -49,10 +50,21 @@ async def analyze_submission(
         audio_bytes = await audio.read()
         audio_filename = audio.filename or "recording.mp3"
 
-    if not image_bytes and not audio_bytes and not text:
+    apk_bytes = None
+    apk_filename = "uploaded_app.apk"
+    if apk_file:
+        apk_bytes = await apk_file.read()
+        apk_filename = apk_file.filename or "uploaded_app.apk"
+        if len(apk_bytes) > 25 * 1024 * 1024:
+            raise HTTPException(
+                status_code=413,
+                detail="Uploaded APK file exceeds the 25 MB maximum static analysis size."
+            )
+
+    if not image_bytes and not audio_bytes and not apk_bytes and not text:
         raise HTTPException(
             status_code=400,
-            detail="At least one modality (image, audio, or text) must be provided."
+            detail="At least one modality (image, audio, apk_file, or text) must be provided."
         )
 
     final_state = None
@@ -64,6 +76,8 @@ async def analyze_submission(
         image_bytes=image_bytes,
         audio_bytes=audio_bytes,
         audio_filename=audio_filename,
+        apk_bytes=apk_bytes,
+        apk_filename=apk_filename,
         raw_text=text or "",
         user_language=language or "en"
     ):

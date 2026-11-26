@@ -1,5 +1,20 @@
 export type Severity = "SAFE" | "CAUTION" | "DANGER";
 
+export interface ApkInspectionResult {
+  is_valid_apk: boolean;
+  filename?: string | null;
+  package_name?: string | null;
+  sha256_hash?: string | null;
+  file_size_bytes: number;
+  dangerous_permissions: string[];
+  sms_interception_risk: boolean;
+  accessibility_abuse_risk: boolean;
+  sideload_dropper_risk: boolean;
+  targeted_banking_apps: string[];
+  embedded_urls: string[];
+  risk_flags: string[];
+}
+
 export interface ForensicEvidence {
   extracted_urls: string[];
   qr_payload?: string | null;
@@ -9,6 +24,10 @@ export interface ForensicEvidence {
   upi_vpas: string[];
   urgency_signals: string[];
   raw_text?: string | null;
+  apk_analysis?: ApkInspectionResult | null;
+  remote_access_tools_detected?: string[];
+  pii_redacted_count?: number;
+  adversarial_injection_detected?: boolean;
 }
 
 export interface ThreatIntelligence {

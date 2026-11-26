@@ -125,6 +125,50 @@ def calculate_verdict(
         if archetype == ScamArchetype.UNKNOWN_SUSPICIOUS:
             archetype = ScamArchetype.PHISHING_LINK
 
+    # 6. Android APK Trojan & Remote-Access Control Checks
+    if evidence.apk_analysis:
+        apk = evidence.apk_analysis
+        if not apk.is_valid_apk and apk.risk_flags:
+            score += 35
+            archetype = ScamArchetype.APK_TROJAN_MALWARE
+            for flag in apk.risk_flags:
+                reasoning.append(f"⚠️ Malformed / Suspicious Package: {flag} (+35 pts).")
+        else:
+            if apk.sms_interception_risk:
+                score += 45
+                archetype = ScamArchetype.APK_TROJAN_MALWARE
+                reasoning.append(
+                    "🚨 OTP Theft Permission Detected: Uploaded APK requests READ_SMS / RECEIVE_SMS access to intercept bank OTPs silently (+45 pts)."
+                )
+            if apk.accessibility_abuse_risk:
+                score += 45
+                archetype = ScamArchetype.APK_TROJAN_MALWARE
+                reasoning.append(
+                    "🚨 Screen Hijack Permission Detected: Uploaded APK requests BIND_ACCESSIBILITY_SERVICE / overlay control used for hidden UPI transfers (+45 pts)."
+                )
+            if apk.sideload_dropper_risk:
+                score += 25
+                if archetype == ScamArchetype.UNKNOWN_SUSPICIOUS:
+                    archetype = ScamArchetype.APK_TROJAN_MALWARE
+                reasoning.append(
+                    "⚠️ Dropper / Persistence Risk: Uploaded APK requests app-installation or boot-persistence privileges (+25 pts)."
+                )
+            if apk.targeted_banking_apps:
+                score += 25
+                archetype = ScamArchetype.APK_TROJAN_MALWARE
+                reasoning.append(
+                    f"🚨 Banking Overlay Targeting: APK references Indian payment apps ({', '.join(apk.targeted_banking_apps)}) (+25 pts)."
+                )
+
+    if evidence.remote_access_tools_detected:
+        score += 40
+        if archetype == ScamArchetype.UNKNOWN_SUSPICIOUS:
+            archetype = ScamArchetype.REMOTE_ACCESS_SCAM
+        tools_str = ", ".join(evidence.remote_access_tools_detected)
+        reasoning.append(
+            f"🚨 Remote Screen-Control Coercion: Message instructs installing/sharing {tools_str}, allowing fraudsters to hijack your phone and read OTPs (+40 pts)."
+        )
+
     # Cap final risk score at 100
     final_score = min(100, max(0, score))
 
@@ -269,7 +313,19 @@ def calculate_verdict(
     }
 
     # Generate Plain-Language Advisory & Immediate Action Checklist (Default: English)
-    if severity == "DANGER":
+    if severity == "DANGER" and archetype in (ScamArchetype.APK_TROJAN_MALWARE, ScamArchetype.REMOTE_ACCESS_SCAM):
+        advisory = (
+            f"🛑 DO NOT INSTALL OR SHARE YOUR SCREEN ({archetype.value.replace('_', ' ')}). "
+            "Government agencies, traffic police, and banks NEVER send .apk files on WhatsApp or ask you "
+            "to install AnyDesk / TeamViewer. Doing so lets scammers read your SMS OTPs and empty your bank account."
+        )
+        checklist = [
+            "Do NOT tap Install or allow 'Install Unknown Apps' on your phone.",
+            "If you already installed the APK or shared an AnyDesk/TeamViewer code, IMMEDIATELY turn ON Airplane Mode (disable Wi-Fi & Mobile Data).",
+            "Go to Settings -> Apps & Accessibility, revoke permissions, and uninstall the suspicious APK / remote-access app immediately.",
+            "Call National Cyber Crime Helpline 1930 and instruct your bank to temporarily freeze UPI/netbanking; report on cybercrime.gov.in."
+        ]
+    elif severity == "DANGER":
         advisory = (
             f"🛑 DO NOT PROCEED. This is a high-confidence {archetype.value.replace('_', ' ')}. "
             "Do NOT scan this QR code, do NOT click the link, and do NOT send money. "
@@ -300,9 +356,18 @@ def calculate_verdict(
         ]
 
     # Override with regional translation if requested
+    APK_LOCALIZED_TIP = {
+        "hi": "यदि आपने संदिग्ध .apk फ़ाइल या AnyDesk इंस्टॉल कर लिया है, तो तुरंत मोबाइल डेटा/वाई-फाई बंद करें, ऐप अनइंस्टॉल करें और 1930 पर कॉल करें।",
+        "te": "మీరు ఇప్పటికే అనుమానాస్పద .apk ఫైల్ లేదా AnyDesk ఇన్‌స్టాల్ చేసి ఉంటే, వెంటనే మొబైల్ డేటా/వైఫై ఆపివేసి యాప్‌ను అన్‌ఇన్‌స్టాల్ చేయండి మరియు 1930 కి కాల్ చేయండి.",
+        "ta": "சந்தேகத்திற்குரிய .apk கோப்பு அல்லது AnyDesk ஐ ஏற்கனவே நிறுவியிருந்தால், உடனடியாக மொபைல் டேட்டா/வைஃபையை அணைத்து செயலியை நீக்கி 1930 ஐ அழைக்கவும்.",
+        "bn": "আপনি ইতিমধ্যেই সন্দেহজনক .apk বা AnyDesk ইনস্টল করে থাকলে অবিলম্বে মোবাইল ডেটা/ওয়াই-ফাই বন্ধ করুন, অ্যাপটি আনইনস্টল করুন এবং ১৯৩০-এ কল করুন।"
+    }
     target_lang = (user_language or "en").lower().strip()
     if target_lang in LANG_DATA and severity in LANG_DATA[target_lang]:
         advisory, checklist = LANG_DATA[target_lang][severity]
+        if severity == "DANGER" and archetype in (ScamArchetype.APK_TROJAN_MALWARE, ScamArchetype.REMOTE_ACCESS_SCAM):
+            if target_lang in APK_LOCALIZED_TIP:
+                checklist = [APK_LOCALIZED_TIP[target_lang], *checklist]
 
     confidence = 0.95 if final_score > 70 or final_score < 20 else 0.82
 

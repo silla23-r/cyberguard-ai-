@@ -194,6 +194,31 @@ def generate_evidence_pdf(
         truncated_url = u[:50] + ("..." if len(u) > 50 else "")
         ind_data.append([Paragraph("Malicious / Phishing URL", body_style), Paragraph(_safe_xml(truncated_url), body_style), Paragraph(f"Domain age: {_safe_xml(str(threat_intel.domain_age_days or 'Unknown'))} days", body_style)])
 
+    # Remote-Access Coercion Tools
+    if evidence.remote_access_tools_detected:
+        ind_data.append([
+            Paragraph("Remote-Access Coercion", body_style),
+            Paragraph(_safe_xml(", ".join(evidence.remote_access_tools_detected)), body_style),
+            Paragraph("Screen-sharing / OTP hijack vector detected", body_style)
+        ])
+
+    # Android APK Static Inspection
+    if evidence.apk_analysis:
+        apk = evidence.apk_analysis
+        perms_str = ", ".join(apk.dangerous_permissions) if apk.dangerous_permissions else "None flagged"
+        apk_summary = f"{apk.filename or 'app.apk'} (Pkg: {apk.package_name or 'Unknown'})"
+        ind_data.append([
+            Paragraph("Suspicious Android APK", body_style),
+            Paragraph(_safe_xml(apk_summary), body_style),
+            Paragraph(_safe_xml(f"Perms: {perms_str[:80]}"), body_style)
+        ])
+        if apk.sha256_hash:
+            ind_data.append([
+                Paragraph("APK Binary SHA-256", body_style),
+                Paragraph(f"<font face='Courier' size='6.5'>{_safe_xml(apk.sha256_hash[:40])}...</font>", body_style),
+                Paragraph("Immutable malware sample fingerprint", body_style)
+            ])
+
     if len(ind_data) == 1:
         ind_data.append([Paragraph("General Media", body_style), Paragraph("Screenshot or Audio recording analyzed", body_style), Paragraph("Psychological intimidation observed", body_style)])
 
