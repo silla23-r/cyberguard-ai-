@@ -36,12 +36,11 @@ def build_mock_apk_bytes(
     return buf.getvalue()
 
 
-def main() -> None:
-    out_dir = Path(__file__).resolve().parent
-
-    malicious_apk = build_mock_apk_bytes(
-        package_name="com.rto.echallan.update",
-        permissions=[
+SAMPLE_SPECS = [
+    {
+        "filename": "RTO_eChallan_Pay.apk",
+        "package_name": "com.rto.echallan.update",
+        "permissions": [
             "INTERNET",
             "READ_SMS",
             "RECEIVE_SMS",
@@ -50,27 +49,86 @@ def main() -> None:
             "SYSTEM_ALERT_WINDOW",
             "REQUEST_INSTALL_PACKAGES",
         ],
-        extra_strings=[
+        "extra_strings": [
             "com.sbi.lotusintouch",
             "com.phonepe.app",
             "https://rto-challan-verify.xyz/c2",
         ],
-        encode_utf16=True,
-    )
-    malicious_path = out_dir / "RTO_eChallan_Pay.apk"
-    malicious_path.write_bytes(malicious_apk)
+        "encode_utf16": True,
+    },
+    {
+        "filename": "SBI_YONO_KYC_Update.apk",
+        "package_name": "com.sbi.yono.kyc.update",
+        "permissions": [
+            "INTERNET",
+            "READ_SMS",
+            "RECEIVE_SMS",
+            "READ_CALL_LOG",
+            "BIND_ACCESSIBILITY_SERVICE",
+            "RECEIVE_BOOT_COMPLETED",
+        ],
+        "extra_strings": [
+            "com.sbi.lotusintouch",
+            "com.sbi.SBIFreedomPlus",
+            "com.snapwork.hdfc",
+            "https://sbi-kyc-portal.top/otp",
+        ],
+        "encode_utf16": True,
+    },
+    {
+        "filename": "PM_Kisan_Subsidy_Form.apk",
+        "package_name": "gov.pmkisan.beneficiary.app",
+        "permissions": [
+            "INTERNET",
+            "READ_SMS",
+            "RECEIVE_SMS",
+            "READ_CONTACTS",
+            "SYSTEM_ALERT_WINDOW",
+            "REQUEST_INSTALL_PACKAGES",
+        ],
+        "extra_strings": [
+            "in.org.npci.upiapp",
+            "com.google.android.apps.nbu.paisa.user",
+            "https://api.telegram.org/bot_demo_c2/sendMessage",
+        ],
+        "encode_utf16": True,
+    },
+    {
+        "filename": "FedEx_Parcel_Helper.apk",
+        "package_name": "com.fedex.parcel.tracking",
+        "permissions": [
+            "INTERNET",
+            "REQUEST_INSTALL_PACKAGES",
+            "READ_CONTACTS",
+            "CALL_PHONE",
+        ],
+        "extra_strings": [
+            "Parcel Delivery Helper",
+        ],
+        "encode_utf16": False,
+    },
+    {
+        "filename": "legit_calculator_sample.apk",
+        "package_name": "com.example.calculator",
+        "permissions": ["INTERNET"],
+        "extra_strings": ["Simple Calculator Utility"],
+        "encode_utf16": False,
+    },
+]
 
-    safe_apk = build_mock_apk_bytes(
-        package_name="com.example.calculator",
-        permissions=["INTERNET"],
-        extra_strings=["Simple Calculator Utility"],
-        encode_utf16=False,
-    )
-    safe_path = out_dir / "legit_calculator_sample.apk"
-    safe_path.write_bytes(safe_apk)
 
-    print(f"Created safe mock malicious demo APK: {malicious_path}")
-    print(f"Created clean baseline demo APK:      {safe_path}")
+def main() -> None:
+    out_dir = Path(__file__).resolve().parent
+    for spec in SAMPLE_SPECS:
+        apk_bytes = build_mock_apk_bytes(
+            package_name=spec["package_name"],
+            permissions=spec["permissions"],
+            extra_strings=spec["extra_strings"],
+            encode_utf16=spec["encode_utf16"],
+        )
+        out_path = out_dir / spec["filename"]
+        out_path.write_bytes(apk_bytes)
+        print(f"Generated {out_path.name} ({len(apk_bytes)} bytes)")
 
 
 if __name__ == "__main__":
