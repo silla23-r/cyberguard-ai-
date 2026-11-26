@@ -118,7 +118,16 @@ SAMPLE_SPECS = [
 
 
 def main() -> None:
-    out_dir = Path(__file__).resolve().parent
+    sample_dir = Path(__file__).resolve().parent
+    repo_root = sample_dir.parent.parent
+    target_dirs = [
+        sample_dir,
+        repo_root / "backend" / "static" / "samples",
+        repo_root / "frontend" / "public" / "samples",
+    ]
+    for d in target_dirs:
+        d.mkdir(parents=True, exist_ok=True)
+
     for spec in SAMPLE_SPECS:
         apk_bytes = build_mock_apk_bytes(
             package_name=spec["package_name"],
@@ -126,9 +135,10 @@ def main() -> None:
             extra_strings=spec["extra_strings"],
             encode_utf16=spec["encode_utf16"],
         )
-        out_path = out_dir / spec["filename"]
-        out_path.write_bytes(apk_bytes)
-        print(f"Generated {out_path.name} ({len(apk_bytes)} bytes)")
+        for out_dir in target_dirs:
+            out_path = out_dir / spec["filename"]
+            out_path.write_bytes(apk_bytes)
+        print(f"Generated {spec['filename']} ({len(apk_bytes)} bytes) across sample folders")
 
 
 if __name__ == "__main__":

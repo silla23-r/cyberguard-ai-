@@ -27,6 +27,12 @@ export interface TranslationDict {
     dropAudioHint: string;
     dropApkPrompt: string;
     dropApkHint: string;
+    apkPresetsLabel: string;
+    apkPresetRto: string;
+    apkPresetSbi: string;
+    apkPresetKisan: string;
+    apkPresetFedex: string;
+    apkPresetSafe: string;
     pastePlaceholder: string;
     scanButton: string;
     scanningButton: string;
@@ -105,6 +111,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       dropAudioHint: "Supports MP3, WAV, M4A, OGG (Max 25MB)",
       dropApkPrompt: "Upload suspicious Android .apk file sent via WhatsApp or SMS",
       dropApkHint: "Safely unpacks manifest permissions without executing (Max 25MB)",
+      apkPresetsLabel: "Quick Test APKs:",
+      apkPresetRto: "RTO Challan APK",
+      apkPresetSbi: "SBI KYC APK",
+      apkPresetKisan: "PM-Kisan APK",
+      apkPresetFedex: "FedEx Parcel APK",
+      apkPresetSafe: "Safe Calculator APK",
       pastePlaceholder: "Paste suspicious SMS, WhatsApp message, email, or UPI request note here...",
       scanButton: "Scan & Analyze with CyberGuard",
       scanningButton: "Analyzing submission...",
@@ -181,6 +193,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       dropAudioHint: "MP3, WAV, M4A, OGG समर्थित (अधिकतम 25MB)",
       dropApkPrompt: "व्हाट्सएप या SMS से मिली संदिग्ध Android .apk फ़ाइल अपलोड करें",
       dropApkHint: "फ़ाइल को चलाए बिना सुरक्षित रूप से अनुमतियों की जांच करता है (अधिकतम 25MB)",
+      apkPresetsLabel: "त्वरित परीक्षण APK उदाहरण:",
+      apkPresetRto: "RTO चालान APK",
+      apkPresetSbi: "SBI KYC APK",
+      apkPresetKisan: "PM-किसान APK",
+      apkPresetFedex: "FedEx पार्सल APK",
+      apkPresetSafe: "सुरक्षित कैलकुलेटर APK",
       pastePlaceholder: "संदिग्ध SMS, व्हाट्सएप मैसेज, ईमेल या UPI नोट यहाँ पेस्ट करें...",
       scanButton: "साइबरगार्ड AI से तुरंत जांच करें",
       scanningButton: "डेटा और साइबर रिकॉर्ड्स की जांच हो रही है...",
@@ -257,6 +275,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       dropAudioHint: "MP3, WAV, M4A, OGG సపోర్ట్ (గరిష్టంగా 25MB)",
       dropApkPrompt: "వాట్సాప్ లేదా SMS ద్వారా వచ్చిన అనుమానాస్పద Android .apk ఫైల్‌ను అప్‌లోడ్ చేయండి",
       dropApkHint: "యాప్ ఇన్‌స్టాల్ చేయకుండా సురక్షితంగా అనుమతులను పరిశీలిస్తుంది (గరిష్టంగా 25MB)",
+      apkPresetsLabel: "త్వరిత పరీక్ష APK నమూనాలు:",
+      apkPresetRto: "RTO చలాన్ APK",
+      apkPresetSbi: "SBI KYC APK",
+      apkPresetKisan: "PM-కిసాన్ APK",
+      apkPresetFedex: "FedEx పార్సెల్ APK",
+      apkPresetSafe: "సురక్షిత కాలిక్యులేటర్ APK",
       pastePlaceholder: "అనుమానాస్పద SMS, వాట్సాప్ సందేశం లేదా UPI నోట్‌ను ఇక్కడ పేస్ట్ చేయండి...",
       scanButton: "సైబర్‌గార్డ్ AI తో స్కాన్ & విశ్లేషించండి",
       scanningButton: "డేటాను విశ్లేషిస్తోంది...",
@@ -333,6 +357,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       dropAudioHint: "MP3, WAV, M4A, OGG ஆதரிக்கப்படுகிறது (அதிகபட்சம் 25MB)",
       dropApkPrompt: "வாட்ஸ்அப் அல்லது SMS மூலம் வந்த சந்தேகத்திற்குரிய Android .apk கோப்பை பதிவேற்றவும்",
       dropApkHint: "செயலியை நிறுவாமல் பாதுகாப்பாக அனுமதிகளைச் சோதிக்கும் (அதிகபட்சம் 25MB)",
+      apkPresetsLabel: "விரைவு சோதனை APK மாதிரிகள்:",
+      apkPresetRto: "RTO சலான் APK",
+      apkPresetSbi: "SBI KYC APK",
+      apkPresetKisan: "PM-கிசான் APK",
+      apkPresetFedex: "FedEx பார்சல் APK",
+      apkPresetSafe: "பாதுகாப்பான கால்குலேட்டர் APK",
       pastePlaceholder: "சந்தேகத்திற்குரிய SMS, வாட்ஸ்அப் செய்தி அல்லது UPI குறிப்பை இங்கே ஒட்டவும்...",
       scanButton: "சைபர்கார்ட் AI மூலம் ஸ்கேன் செய்து பகுப்பாய்வு செய்க",
       scanningButton: "பகுப்பாய்வு செய்யப்படுகிறது...",
@@ -409,6 +439,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       dropAudioHint: "MP3, WAV, M4A, OGG সমর্থিত (সর্বোচ্চ 25MB)",
       dropApkPrompt: "হোয়াটসঅ্যাপ বা SMS থেকে পাওয়া সন্দেহজনক Android .apk ফাইল আপলোড করুন",
       dropApkHint: "ফাইল না চালিয়েই নিরাপদে বিপজ্জনক পারমিশন পরীক্ষা করে (সর্বোচ্চ 25MB)",
+      apkPresetsLabel: "দ্রুত পরীক্ষার APK নমুনা:",
+      apkPresetRto: "RTO চালান APK",
+      apkPresetSbi: "SBI KYC APK",
+      apkPresetKisan: "PM-কিষাণ APK",
+      apkPresetFedex: "FedEx পার্সেল APK",
+      apkPresetSafe: "নিরাপদ ক্যালকুলেটর APK",
       pastePlaceholder: "সন্দেহজনক SMS, হোয়াটসঅ্যাপ বার্তা বা UPI নোট এখানে পেস্ট করুন...",
       scanButton: "সাইবারগার্ড AI দিয়ে স্ক্যান ও বিশ্লেষণ করুন",
       scanningButton: "তথ্য বিশ্লেষণ করা হচ্ছে...",

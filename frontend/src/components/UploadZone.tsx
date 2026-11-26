@@ -52,6 +52,27 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
   const apkInputRef = useRef<HTMLInputElement>(null);
+  const [loadingApkPreset, setLoadingApkPreset] = useState<string | null>(null);
+
+  const handleSelectApkPreset = async (filename: string) => {
+    setLoadingApkPreset(filename);
+    try {
+      const resp = await fetch(`/samples/${filename}`);
+      if (!resp.ok) {
+        throw new Error(`Could not load sample APK (${resp.status})`);
+      }
+      const blob = await resp.blob();
+      const file = new File([blob], filename, {
+        type: "application/vnd.android.package-archive",
+      });
+      setApkFile(file);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      alert("Sample APK load error: " + msg);
+    } finally {
+      setLoadingApkPreset(null);
+    }
+  };
 
   const handleSubmit = () => {
     if (!imageFile && !audioFile && !apkFile && !textInput.trim()) {
@@ -210,31 +231,62 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
 
       {/* Tab 3: Android APK / File */}
       {activeTab === "apk" && (
-        <div
-          onClick={() => apkInputRef.current?.click()}
-          className="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50"
-        >
-          <input
-            type="file"
-            ref={apkInputRef}
-            accept=".apk,application/vnd.android.package-archive"
-            className="hidden"
-            onChange={(e) => setApkFile(e.target.files?.[0] || null)}
-          />
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
-              <Package className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-zinc-900">{t.upload.dropApkPrompt}</p>
-              <p className="text-xs text-zinc-500 mt-1">{t.upload.dropApkHint}</p>
-            </div>
-            {apkFile && (
-              <div className="mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
-                <FileCheck className="w-4 h-4 text-emerald-700" />
-                <span>{apkFile.name}</span>
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs text-zinc-500 font-medium">{t.upload.apkPresetsLabel}</span>
+            {[
+              { filename: "RTO_eChallan_Pay.apk", label: t.upload.apkPresetRto },
+              { filename: "SBI_YONO_KYC_Update.apk", label: t.upload.apkPresetSbi },
+              { filename: "PM_Kisan_Subsidy_Form.apk", label: t.upload.apkPresetKisan },
+              { filename: "FedEx_Parcel_Helper.apk", label: t.upload.apkPresetFedex },
+              { filename: "legit_calculator_sample.apk", label: t.upload.apkPresetSafe },
+            ].map((sample) => {
+              const isSelected = apkFile?.name === sample.filename;
+              const isBusy = loadingApkPreset === sample.filename;
+              return (
+                <button
+                  key={sample.filename}
+                  type="button"
+                  disabled={Boolean(loadingApkPreset)}
+                  onClick={() => handleSelectApkPreset(sample.filename)}
+                  className={`text-xs px-2.5 py-1 rounded-md border transition cursor-pointer disabled:opacity-50 ${
+                    isSelected
+                      ? "bg-zinc-900 border-zinc-900 text-white"
+                      : "bg-white hover:bg-zinc-50 border-zinc-200 hover:border-zinc-400 text-zinc-700"
+                  }`}
+                >
+                  {isBusy ? `${sample.label}...` : sample.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            onClick={() => apkInputRef.current?.click()}
+            className="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50"
+          >
+            <input
+              type="file"
+              ref={apkInputRef}
+              accept=".apk,application/vnd.android.package-archive"
+              className="hidden"
+              onChange={(e) => setApkFile(e.target.files?.[0] || null)}
+            />
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-11 h-11 rounded-lg bg-white border border-zinc-200 flex items-center justify-center text-zinc-700">
+                <Package className="w-5 h-5" />
               </div>
-            )}
+              <div>
+                <p className="text-sm font-medium text-zinc-900">{t.upload.dropApkPrompt}</p>
+                <p className="text-xs text-zinc-500 mt-1">{t.upload.dropApkHint}</p>
+              </div>
+              {apkFile && (
+                <div className="mt-2 px-3 py-1.5 bg-white rounded-md border border-zinc-200 text-xs text-zinc-800 font-mono flex items-center gap-2">
+                  <FileCheck className="w-4 h-4 text-emerald-700" />
+                  <span>{apkFile.name}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

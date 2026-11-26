@@ -170,6 +170,30 @@
 
       <!-- Tab 3: Android APK Upload -->
       <div id="panelApk" class="hidden space-y-4">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-zinc-500 font-medium">Quick Test APKs:</span>
+          <button type="button" onclick="loadSampleApk('RTO_eChallan_Pay.apk', this)"
+            class="apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            RTO Challan APK
+          </button>
+          <button type="button" onclick="loadSampleApk('SBI_YONO_KYC_Update.apk', this)"
+            class="apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            SBI KYC APK
+          </button>
+          <button type="button" onclick="loadSampleApk('PM_Kisan_Subsidy_Form.apk', this)"
+            class="apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            PM-Kisan APK
+          </button>
+          <button type="button" onclick="loadSampleApk('FedEx_Parcel_Helper.apk', this)"
+            class="apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            FedEx Parcel APK
+          </button>
+          <button type="button" onclick="loadSampleApk('legit_calculator_sample.apk', this)"
+            class="apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition">
+            Safe Calculator APK
+          </button>
+        </div>
+
         <div onclick="document.getElementById('apkInput').click()"
           class="border border-dashed border-zinc-300 hover:border-zinc-500 rounded-lg p-8 text-center cursor-pointer transition bg-zinc-50/70 hover:bg-zinc-50">
           <input type="file" id="apkInput" accept=".apk,application/vnd.android.package-archive" class="hidden" onchange="handleApkSelected(event)">
@@ -535,6 +559,28 @@
         selectedApkFile = e.target.files[0];
         document.getElementById('apkFileName').innerText = selectedApkFile.name;
         document.getElementById('apkPreview').classList.remove('hidden');
+        document.querySelectorAll('.apk-preset-btn').forEach(btn => {
+          btn.className = "apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition";
+        });
+      }
+    }
+
+    async function loadSampleApk(filename, btnEl) {
+      try {
+        const resp = await fetch('/static/samples/' + encodeURIComponent(filename));
+        if (!resp.ok) throw new Error('Failed to load sample APK');
+        const blob = await resp.blob();
+        selectedApkFile = new File([blob], filename, { type: 'application/vnd.android.package-archive' });
+        document.getElementById('apkFileName').innerText = selectedApkFile.name;
+        document.getElementById('apkPreview').classList.remove('hidden');
+        document.querySelectorAll('.apk-preset-btn').forEach(btn => {
+          btn.className = "apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-white hover:bg-zinc-50 border border-zinc-200 hover:border-zinc-400 text-zinc-700 transition";
+        });
+        if (btnEl) {
+          btnEl.className = "apk-preset-btn text-xs px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-900 text-white transition";
+        }
+      } catch (err) {
+        alert('Could not load sample APK: ' + err.message);
       }
     }
 
