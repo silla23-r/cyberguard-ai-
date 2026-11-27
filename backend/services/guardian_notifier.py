@@ -269,33 +269,47 @@ async def _send_web_push(subscription_json: str, payload: Dict[str, Any], is_cri
         return False
 
 
-async def send_twilio_message(to_number: str, body: str, use_whatsapp: bool = True) -> bool:
-    """Dispatches WhatsApp or SMS via Twilio REST API cleanly over aiohttp."""
+async def send_twilio_message_with_status(
+    to_number: str, body: str, use_whatsapp: bool = True
+) -> Tuple[bool, str]:
+    """Dispatches WhatsApp or SMS via Twilio REST API and returns (success, diagnostic_reason)."""
     sid = (settings.TWILIO_ACCOUNT_SID or "").strip()
     token = (settings.TWILIO_AUTH_TOKEN or "").strip()
     if not sid or not token or sid == "your_twilio_sid_here":
-        return False
+        return False, "TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN not configured on server"
+
+    clean_to = to_number.strip().replace("whatsapp:", "")
+    if use_whatsapp:
+        from_val = settings.TWILIO_WHATSAPP_NUMBER
+        if not from_val.startswith("whatsapp:"):
+            from_val = f"whatsapp:{from_val}"
+        to_val = f"whatsapp:{clean_to}"
+    else:
+        sms_from = (settings.TWILIO_SMS_NUMBER or "").strip()
+        if not sms_from:
+            return False, "TWILIO_SMS_NUMBER not configured (sandbox number cannot send plain SMS)"
+        from_val = sms_from
+        to_val = clean_to
 
     url = f"https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
-    clean_to = to_number.strip().replace("whatsapp:", "")
-    from_val = (
-        settings.TWILIO_WHATSAPP_NUMBER
-        if use_whatsapp
-        else settings.TWILIO_WHATSAPP_NUMBER.replace("whatsapp:", "")
-    )
-    to_val = f"whatsapp:{clean_to}" if use_whatsapp else clean_to
-
     auth = aiohttp.BasicAuth(sid, token)
     try:
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=5)) as session:
             async with session.post(url, data={"From": from_val, "To": to_val, "Body": body}, auth=auth) as resp:
                 if 200 <= resp.status < 300:
-                    return True
-                logger.warning(f"Twilio {'WhatsApp' if use_whatsapp else 'SMS'} failed: HTTP {resp.status}")
-                return False
+                    return True, "delivered"
+                err_body = await resp.text()
+                logger.warning(f"Twilio {'WhatsApp' if use_whatsapp else 'SMS'} failed HTTP {resp.status}: {err_body}")
+                return False, f"Twilio HTTP {resp.status}: {err_body[:160]}"
     except Exception as exc:
         logger.warning(f"Twilio dispatch error: {exc}")
-        return False
+        return False, str(exc)
+
+
+async def send_twilio_message(to_number: str, body: str, use_whatsapp: bool = True) -> bool:
+    """Dispatches WhatsApp or SMS via Twilio REST API cleanly over aiohttp."""
+    ok, _ = await send_twilio_message_with_status(to_number, body, use_whatsapp=use_whatsapp)
+    return ok
 
 
 async def dispatch_guardian_alert(

@@ -139,7 +139,7 @@ export const GuardianModal: React.FC<GuardianModalProps> = ({
       setFeedback(
         res.delivered_via_twilio
           ? "6-digit Consent OTP sent to Guardian via WhatsApp/SMS."
-          : "6-digit Consent OTP issued (Demo Mode: no Twilio keys configured)."
+          : (res.delivery_reason || "SMS/WhatsApp gateway unavailable — use the Consent Code below to verify.")
       );
     } catch (err: unknown) {
       setErrorMsg(err instanceof Error ? err.message : String(err));
@@ -415,7 +415,7 @@ export const GuardianModal: React.FC<GuardianModalProps> = ({
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-zinc-700">Her Callback Number (Optional)</label>
+                      <label className="text-xs font-medium text-zinc-700">Her Callback Number (Optional — for Call button)</label>
                       <input
                         value={protectedPhone}
                         onChange={(e) => setProtectedPhone(e.target.value)}
@@ -433,7 +433,7 @@ export const GuardianModal: React.FC<GuardianModalProps> = ({
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-medium text-zinc-700">Guardian WhatsApp / Phone</label>
+                      <label className="text-xs font-medium text-zinc-700">Guardian Phone (Receives OTP &amp; Alerts)</label>
                       <input
                         value={guardianPhone}
                         onChange={(e) => setGuardianPhone(e.target.value)}
@@ -475,8 +475,13 @@ export const GuardianModal: React.FC<GuardianModalProps> = ({
               ) : (
                 <form onSubmit={handleVerifyOtp} className="space-y-3">
                   {demoOtpHint && (
-                    <div className="p-3 rounded-lg bg-zinc-100 border border-zinc-300 text-xs text-zinc-900 font-mono">
-                      Demo OTP Code: <strong>{demoOtpHint}</strong>
+                    <div className="p-3 rounded-lg bg-zinc-100 border border-zinc-300 text-xs text-zinc-900 space-y-1">
+                      <div className="font-mono">
+                        Verification OTP Code: <strong>{demoOtpHint}</strong>
+                      </div>
+                      <p className="text-[11px] text-zinc-600 leading-snug">
+                        SMS/WhatsApp OTP was not sent because the Twilio gateway is not active. Enter this Consent Code below to activate free Web Push alerts.
+                      </p>
                     </div>
                   )}
                   <div className="space-y-1">

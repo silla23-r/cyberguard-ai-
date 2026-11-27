@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     TWILIO_ACCOUNT_SID: str = ""
     TWILIO_AUTH_TOKEN: str = ""
     TWILIO_WHATSAPP_NUMBER: str = "whatsapp:+14155238886"
+    TWILIO_SMS_NUMBER: str = ""
     META_WHATSAPP_TOKEN: str = ""
     META_VERIFY_TOKEN: str = "cyberguard_verify_secret"
     SERVER_PUBLIC_URL: str = "http://localhost:8000"

@@ -93,7 +93,12 @@ export async function requestGuardianPair(payload: {
   protected_label: string;
   protected_phone: string;
   share_raw_context: boolean;
-}): Promise<{ status: string; delivered_via_twilio: boolean; demo_otp_preview?: string }> {
+}): Promise<{
+  status: string;
+  delivered_via_twilio: boolean;
+  delivery_reason?: string;
+  demo_otp_preview?: string;
+}> {
   const resp = await fetch(apiUrl("/api/guardian/pair/request"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },

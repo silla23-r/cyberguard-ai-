@@ -41,6 +41,7 @@ from models.schemas import (
 from services.guardian_notifier import (
     dispatch_guardian_alert,
     encrypt_web_push_payload,
+    send_twilio_message_with_status,
     should_dispatch_guardian_alert,
 )
 from services.guardian_store import (
@@ -271,11 +272,32 @@ def test_dispatch_cascade_and_privacy_toggle(isolated_guardian_db, monkeypatch):
     assert "twilio_sms" in logged[0]["delivery_channels"]
 
 
+def test_twilio_sms_number_diagnostic_when_unset(monkeypatch):
+    monkeypatch.setattr(settings, "TWILIO_ACCOUNT_SID", "")
+    monkeypatch.setattr(settings, "TWILIO_AUTH_TOKEN", "")
+    ok_missing, reason_missing = _run_coro_sync(
+        send_twilio_message_with_status("+919876543210", "OTP", use_whatsapp=True)
+    )
+    assert ok_missing is False
+    assert "not configured" in reason_missing
+
+    monkeypatch.setattr(settings, "TWILIO_ACCOUNT_SID", "AC_dummy_sid")
+    monkeypatch.setattr(settings, "TWILIO_AUTH_TOKEN", "dummy_token")
+    monkeypatch.setattr(settings, "TWILIO_SMS_NUMBER", "")
+    ok_sms, reason_sms = _run_coro_sync(
+        send_twilio_message_with_status("+919876543210", "OTP", use_whatsapp=False)
+    )
+    assert ok_sms is False
+    assert "TWILIO_SMS_NUMBER not configured" in reason_sms
+
+
 def test_guardian_routes_consent_lifecycle(isolated_guardian_db, monkeypatch):
     async def _noop_twilio(*args, **kwargs):
         return False
 
     monkeypatch.setattr("api.guardian_routes.send_twilio_message", _noop_twilio)
+    monkeypatch.setattr(settings, "ENVIRONMENT", "production")
+    monkeypatch.setattr(settings, "TWILIO_ACCOUNT_SID", "")
     dev_id = "DEV-ROUTE-01"
 
     req_res = _run_coro_sync(
@@ -289,6 +311,8 @@ def test_guardian_routes_consent_lifecycle(isolated_guardian_db, monkeypatch):
         )
     )
     assert req_res["status"] == "otp_issued"
+    assert req_res["delivered_via_twilio"] is False
+    assert "not configured" in req_res["delivery_reason"]
     otp = req_res["demo_otp_preview"]
 
     ver_res = _run_coro_sync(verify_guardian_pair(PairVerifyRequest(device_id=dev_id, otp_code=otp)))

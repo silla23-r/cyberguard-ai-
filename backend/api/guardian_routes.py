@@ -79,16 +79,34 @@ async def request_guardian_pair(req: PairRequest):
         "to activate real-time Guardian Scam Alerts."
     )
     delivered = await send_twilio_message(req.guardian_phone, msg, use_whatsapp=True)
+    delivery_reason = "sent_via_twilio_whatsapp" if delivered else ""
     if not delivered:
         delivered = await send_twilio_message(req.guardian_phone, msg, use_whatsapp=False)
+        if delivered:
+            delivery_reason = "sent_via_twilio_sms"
+
+    if not delivered:
+        sid = (settings.TWILIO_ACCOUNT_SID or "").strip()
+        if not sid or sid == "your_twilio_sid_here":
+            delivery_reason = (
+                "Twilio SMS/WhatsApp credentials are not configured on this server. "
+                "Using on-screen Consent Code so you can finish pairing for free Web Push alerts."
+            )
+        else:
+            delivery_reason = (
+                "Twilio WhatsApp/SMS delivery did not succeed (if using Twilio Sandbox +14155238886, "
+                "ensure the phone joined the sandbox first, or set TWILIO_SMS_NUMBER). "
+                "Using on-screen verification code."
+            )
 
     response: Dict[str, Any] = {
         "status": "otp_issued",
         "delivered_via_twilio": delivered,
+        "delivery_reason": delivery_reason,
         "expires_in_minutes": 10,
     }
-    # When Twilio is not configured (local/college demo mode), expose OTP preview safely for testing
-    if not delivered and settings.ENVIRONMENT.lower() == "development":
+    # Always provide on-screen verification fallback when Twilio gateway isn't active/reachable
+    if not delivered:
         response["demo_otp_preview"] = otp
 
     return response
