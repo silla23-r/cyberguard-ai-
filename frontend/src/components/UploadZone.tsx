@@ -3,14 +3,50 @@
 import React, { useState, useRef } from "react";
 import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send, ShieldAlert, ShieldCheck, UserX, Package } from "lucide-react";
 import { simulateWhatsAppMessage, blockWhatsAppFraudster } from "@/lib/api";
-import { AnalysisResponse } from "@/lib/types";
+import { AnalysisResponse, UploadMetadata, UploadModality } from "@/lib/types";
 import { getTranslation } from "@/lib/translations";
 
 interface UploadZoneProps {
-  onAnalyze: (formData: FormData) => void;
+  onAnalyze: (formData: FormData, meta: UploadMetadata) => void;
   isLoading: boolean;
   selectedLang: string;
-  onAnalysisResult?: (data: AnalysisResponse) => void;
+  onAnalysisResult?: (data: AnalysisResponse, meta: UploadMetadata) => void;
+}
+
+async function createImageThumbnail(file: File): Promise<string | null> {
+  try {
+    const objectUrl = URL.createObjectURL(file);
+    return await new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        try {
+          const maxDim = 112;
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(null);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL("image/jpeg", 0.65));
+        } catch {
+          resolve(null);
+        } finally {
+          URL.revokeObjectURL(objectUrl);
+        }
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(null);
+      };
+      img.src = objectUrl;
+    });
+  } catch {
+    return null;
+  }
 }
 
 const WA_PRESETS = {
@@ -74,7 +110,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!imageFile && !audioFile && !apkFile && !textInput.trim()) {
       alert("Please upload a screenshot, audio file, APK file, or paste a message.");
       return;
@@ -87,7 +123,37 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
     if (textInput.trim()) formData.append("text", textInput.trim());
     formData.append("language", selectedLang);
 
-    onAnalyze(formData);
+    const attachedNames: string[] = [];
+    if (imageFile) attachedNames.push(imageFile.name);
+    if (audioFile) attachedNames.push(audioFile.name);
+    if (apkFile) attachedNames.push(apkFile.name);
+
+    const modalCount =
+      (imageFile ? 1 : 0) + (audioFile ? 1 : 0) + (apkFile ? 1 : 0) + (textInput.trim() ? 1 : 0);
+    let inputType: UploadModality = "text";
+    if (modalCount > 1) {
+      inputType = "multimodal";
+    } else if (apkFile) {
+      inputType = "apk";
+    } else if (imageFile) {
+      inputType = "image";
+    } else if (audioFile) {
+      inputType = "audio";
+    }
+
+    const trimmedText = textInput.trim();
+    const textSnippet = trimmedText.length > 72 ? trimmedText.slice(0, 72) + "..." : trimmedText;
+    const inputLabel = attachedNames.length > 0 ? attachedNames.join(" + ") : textSnippet || "Submission";
+    const totalBytes =
+      (imageFile?.size || 0) + (audioFile?.size || 0) + (apkFile?.size || 0) || undefined;
+    const previewThumbnail = imageFile ? await createImageThumbnail(imageFile) : null;
+
+    onAnalyze(formData, {
+      inputType,
+      inputLabel,
+      fileSizeBytes: totalBytes,
+      previewThumbnail,
+    });
   };
 
   const handleWhatsAppSend = async () => {
@@ -108,7 +174,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
       });
 
       if (onAnalysisResult && res.verdict) {
-        onAnalysisResult({
+        const analysisPayload: AnalysisResponse = {
           session_id: "WA-" + Date.now().toString(36).toUpperCase(),
           verdict: res.verdict,
           evidence: res.evidence || { extracted_urls: [], upi_vpas: [], phone_numbers: [], urgency_signals: [] },
@@ -124,6 +190,11 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
           report_pdf_url: res.report_pdf_url,
           audio_advisory_url: res.audio_advisory_url,
           steps: res.steps || [],
+        };
+        const msgText = waInput.trim();
+        onAnalysisResult(analysisPayload, {
+          inputType: "whatsapp",
+          inputLabel: msgText.length > 72 ? msgText.slice(0, 72) + "..." : msgText,
         });
       }
     } catch (err: unknown) {

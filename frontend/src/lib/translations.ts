@@ -77,6 +77,12 @@ export interface TranslationDict {
     audioAnalysis: string;
     flags: string;
   };
+  history: {
+    heading: string;
+    empty: string;
+    clearAll: string;
+    viewItem: string;
+  };
   footer: {
     desc: string;
     legal: string;
@@ -161,6 +167,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       audioAnalysis: "Acoustic Threat Analysis",
       flags: "Detected Threat Flags",
     },
+    history: {
+      heading: "Upload History",
+      empty: "No uploads scanned yet. Your analyzed screenshots, APKs, call recordings, and messages will appear here.",
+      clearAll: "Clear History",
+      viewItem: "View",
+    },
     footer: {
       desc: "Dedicated to protecting citizens against digital extortion, fake parcel scams, and UPI collect fraud.",
       legal: "Official Indian Cyber Crime Reporting: Dial 1930 or visit cybercrime.gov.in",
@@ -242,6 +254,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       upiAnalysis: "UPI भुगतान विश्लेषण",
       audioAnalysis: "आवाज़ एवं धमकी विश्लेषण",
       flags: "पहचाने गए खतरे",
+    },
+    history: {
+      heading: "अपलोड इतिहास",
+      empty: "अभी तक कोई अपलोड स्कैन नहीं हुआ है। आपके जांचे गए स्क्रीनशॉट, APK, कॉल और संदेश यहाँ दिखेंगे।",
+      clearAll: "इतिहास साफ़ करें",
+      viewItem: "देखें",
     },
     footer: {
       desc: "डिजिटल अरेस्ट, फर्जी कूरियर पार्सल और UPI फ्रॉड से नागरिकों की सुरक्षा के लिए समर्पित।",
@@ -325,6 +343,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       audioAnalysis: "వాయిస్ & బెదిరింపు విశ్లేషణ",
       flags: "గుర్తించిన ప్రమాద హెచ్చరికలు",
     },
+    history: {
+      heading: "అప్‌లోడ్ చరిత్ర",
+      empty: "ఇంకా ఎటువంటి ఫైళ్లు స్కాన్ చేయబడలేదు. మీరు పరిశీలించిన స్క్రీన్‌షాట్‌లు, APKలు మరియు సందేశాలు ఇక్కడ కనిపిస్తాయి.",
+      clearAll: "చరిత్రను క్లియర్ చేయండి",
+      viewItem: "చూడండి",
+    },
     footer: {
       desc: "డిజిటల్ అరెస్ట్, నకిలీ కొరియర్ పార్సెల్ మరియు UPI మోసాల నుండి పౌరులను రక్షించడానికి రూపొందించబడింది.",
       legal: "భారత ప్రభుత్వం జాతీయ సైబర్ క్రైమ్ హెల్ప్‌లైన్: 1930 డయల్ చేయండి లేదా cybercrime.gov.in సందర్శించండి",
@@ -407,6 +431,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       audioAnalysis: "குரல் மற்றும் ஒலி பகுப்பாய்வு",
       flags: "கண்டறியப்பட்ட எச்சரிக்கைகள்",
     },
+    history: {
+      heading: "பதிவேற்ற வரலாறு",
+      empty: "இதுவரை எந்த கோப்பும் சோதிக்கப்படவில்லை. நீங்கள் பதிவேற்றிய ஸ்கிரீன்ஷாட்கள், APKகள் மற்றும் செய்திகள் இங்கே காண்பிக்கப்படும்.",
+      clearAll: "வரலாற்றை அழி",
+      viewItem: "பார்க்க",
+    },
     footer: {
       desc: "டிஜிட்டல் கைது, போலி பார்சல் மோசடிகள் மற்றும் UPI மோசடிகளில் இருந்து பொதுமக்களைப் பாதுகாக்க உருவாக்கப்பட்டது.",
       legal: "இந்திய தேசிய சைபர் கிரைம் உதவி: 1930 அல்லது cybercrime.gov.in பார்க்கவும்",
@@ -488,6 +518,12 @@ export const translations: Record<SupportedLanguage, TranslationDict> = {
       upiAnalysis: "UPI পেমেন্ট বিশ্লেষণ",
       audioAnalysis: "কণ্ঠস্বর ও হুমকি বিশ্লেষণ",
       flags: "চিহ্নিত ঝুঁকির কারণ",
+    },
+    history: {
+      heading: "আপলোড ইতিহাস",
+      empty: "এখনও কোনো ফাইল স্ক্যান করা হয়নি। আপনার পরীক্ষিত স্ক্রিনশট, APK, কল রেকর্ডিং ও মেসেজ এখানে দেখা যাবে।",
+      clearAll: "ইতিহাস মুছুন",
+      viewItem: "দেখুন",
     },
     footer: {
       desc: "ডিজিটাল গ্রেফতারি, ভুয়ো পার্সেল এবং UPI প্রতারণা থেকে নাগরিকদের রক্ষার জন্য তৈরি।",

@@ -66,6 +66,25 @@ export interface AgentStep {
   details?: Record<string, unknown> | null;
 }
 
+export type UploadModality = "image" | "audio" | "apk" | "text" | "whatsapp" | "multimodal";
+
+export interface UploadMetadata {
+  inputType: UploadModality;
+  inputLabel: string;
+  fileSizeBytes?: number;
+  previewThumbnail?: string | null;
+}
+
+export interface UploadHistoryItem {
+  id: string;
+  uploadedAt: string;
+  inputType: UploadModality;
+  inputLabel: string;
+  fileSizeBytes?: number;
+  previewThumbnail?: string | null;
+  result: AnalysisResponse;
+}
+
 export interface AnalysisResponse {
   session_id: string;
   verdict: RiskVerdict;
