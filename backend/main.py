@@ -51,6 +51,14 @@ app.include_router(guardian_router)
 # Mount Static Folders
 app.mount("/static", StaticFiles(directory=str(settings.STATIC_DIR)), name="static")
 
+@app.get("/sw.js")
+async def service_worker():
+    """Serves the PWA Push Service Worker at root scope."""
+    sw_file = settings.STATIC_DIR / "sw.js"
+    if sw_file.exists():
+        return FileResponse(str(sw_file), media_type="application/javascript")
+    return {"error": "Service worker not found"}
+
 @app.get("/")
 async def root():
     """Serves the built-in standalone UI dashboard if present, or health info."""
