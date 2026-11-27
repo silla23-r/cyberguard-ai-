@@ -17,6 +17,7 @@ class AgentState(TypedDict):
     # Session identifiers
     session_id: str
     user_language: str
+    device_id: Optional[str]
     
     # Raw Multi-Modal Inputs
     image_bytes: Optional[bytes]

@@ -32,7 +32,8 @@ async def analyze_submission(
     audio: Optional[UploadFile] = File(None),
     apk_file: Optional[UploadFile] = File(None),
     text: Optional[str] = Form(None),
-    language: Optional[str] = Form("en")
+    language: Optional[str] = Form("en"),
+    device_id: Optional[str] = Form(None)
 ):
     """
     Main multimodal analysis endpoint.
@@ -79,7 +80,8 @@ async def analyze_submission(
         apk_bytes=apk_bytes,
         apk_filename=apk_filename,
         raw_text=text or "",
-        user_language=language or "en"
+        user_language=language or "en",
+        device_id=device_id
     ):
         if event["type"] == "step":
             steps.append(event["step"])

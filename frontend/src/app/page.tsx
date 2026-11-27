@@ -9,8 +9,10 @@ import { AgentTimeline } from "@/components/AgentTimeline";
 import { EvidencePanel } from "@/components/EvidencePanel";
 import { ActionPanel } from "@/components/ActionPanel";
 import { UploadHistory } from "@/components/UploadHistory";
+import { GuardianModal } from "@/components/GuardianModal";
 import { Footer } from "@/components/Footer";
 import { analyzeSubmission } from "@/lib/api";
+import { fetchGuardianStatus, getOrCreateDeviceId, GuardianStatusResponse } from "@/lib/guardianPush";
 import { AnalysisResponse, AgentStep, UploadHistoryItem, UploadMetadata } from "@/lib/types";
 
 const HISTORY_STORAGE_KEY = "cyberguard_upload_history_v1";
@@ -22,6 +24,12 @@ export default function Home() {
   const [analysisResult, setAnalysisResult] = useState<AnalysisResponse | null>(null);
   const [timelineSteps, setTimelineSteps] = useState<AgentStep[]>([]);
   const [uploadHistory, setUploadHistory] = useState<UploadHistoryItem[]>([]);
+
+  // Guardian Alert Modal State
+  const [guardianOpen, setGuardianOpen] = useState(false);
+  const [guardianInitialTab, setGuardianInitialTab] = useState<"protect" | "guardian">("protect");
+  const [guardianTargetDevice, setGuardianTargetDevice] = useState("");
+  const [guardianStatus, setGuardianStatus] = useState<GuardianStatusResponse>({ paired: false });
 
   useEffect(() => {
     try {
@@ -35,6 +43,22 @@ export default function Home() {
     } catch {
       // Ignore storage read errors in restricted contexts
     }
+
+    const ownId = getOrCreateDeviceId();
+    if (ownId) {
+      fetchGuardianStatus(ownId)
+        .then((res) => setGuardianStatus(res))
+        .catch(() => {});
+    }
+
+    // If opened from a Guardian push notification or share link (?guardian_device=DEV-XXX)
+    const params = new URLSearchParams(window.location.search);
+    const linkedDevice = params.get("guardian_device");
+    if (linkedDevice) {
+      setGuardianTargetDevice(linkedDevice);
+      setGuardianInitialTab("guardian");
+      setGuardianOpen(true);
+    }
   }, []);
 
   const persistHistory = (nextItems: UploadHistoryItem[]) => {
@@ -42,7 +66,6 @@ export default function Home() {
     try {
       window.localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(nextItems));
     } catch {
-      // Retry without thumbnails if quota exceeded
       try {
         const stripped = nextItems.map((item) => ({ ...item, previewThumbnail: null }));
         window.localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(stripped));
@@ -121,7 +144,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header currentLang={currentLang} onLangChange={setCurrentLang} />
+      <Header
+        currentLang={currentLang}
+        onLangChange={setCurrentLang}
+        guardianPaired={Boolean(guardianStatus.paired && !guardianStatus.is_paused)}
+        onOpenGuardian={() => {
+          setGuardianInitialTab("protect");
+          setGuardianOpen(true);
+        }}
+      />
 
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-10 space-y-6">
         <HeroSection currentLang={currentLang} />
@@ -168,6 +199,14 @@ export default function Home() {
           currentLang={currentLang}
         />
       </main>
+
+      <GuardianModal
+        isOpen={guardianOpen}
+        onClose={() => setGuardianOpen(false)}
+        initialTab={guardianInitialTab}
+        initialTargetDeviceId={guardianTargetDevice}
+        onStatusChange={setGuardianStatus}
+      />
 
       <Footer currentLang={currentLang} />
     </div>

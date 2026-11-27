@@ -21,6 +21,7 @@ class WhatsAppSimulateRequest(BaseModel):
     media_url: Optional[str] = None
     media_content_type: Optional[str] = None
     language: str = "en"
+    device_id: Optional[str] = None
 
 # --- 1. Twilio WhatsApp Webhook Endpoint ---
 @router.post("/webhook")
@@ -113,7 +114,8 @@ async def simulate_whatsapp_bot(request: WhatsAppSimulateRequest):
         incoming_text=request.message,
         media_url=request.media_url,
         media_content_type=request.media_content_type,
-        user_language=request.language
+        user_language=request.language,
+        device_id=request.device_id
     )
 
     return {

@@ -52,3 +52,20 @@ async def websocket_analysis_endpoint(websocket: WebSocket, session_id: str):
         logger.debug(f"WS error: {e}")
         ws_manager.disconnect(session_id, websocket)
 
+
+@router.websocket("/ws/guardian/{device_id}")
+async def websocket_guardian_endpoint(websocket: WebSocket, device_id: str):
+    """Real-time Guardian Alert stream for live in-app dashboard alerts."""
+    channel = f"guardian:{device_id}"
+    await ws_manager.connect(channel, websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            if data == "ping":
+                await websocket.send_text("pong")
+    except WebSocketDisconnect:
+        ws_manager.disconnect(channel, websocket)
+    except Exception as e:
+        logger.debug(f"Guardian WS error: {e}")
+        ws_manager.disconnect(channel, websocket)
+

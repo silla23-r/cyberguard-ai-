@@ -26,6 +26,7 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 backend/static/reports/*.pdf
 backend/static/audio/*.mp3
+backend/data/
 
 # IDE / OS
 .vscode/

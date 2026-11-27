@@ -30,6 +30,13 @@ class Settings(BaseSettings):
     META_VERIFY_TOKEN: str = "cyberguard_verify_secret"
     SERVER_PUBLIC_URL: str = "http://localhost:8000"
 
+    # Real-Time Guardian Alert & VAPID Web Push Settings
+    VAPID_PUBLIC_KEY: str = ""
+    VAPID_PRIVATE_KEY: str = ""
+    VAPID_CLAIM_EMAIL: str = "mailto:security@cyberguard-ai.local"
+    DATA_DIR: Path = BASE_DIR / "data"
+    GUARDIAN_DB_PATH: Path = BASE_DIR / "data" / "guardian.db"
+
     # Server Settings
     HOST: str = "0.0.0.0"
     PORT: int = 8000
@@ -69,3 +76,4 @@ settings.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 settings.STATIC_DIR.mkdir(parents=True, exist_ok=True)
 settings.REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 settings.AUDIO_DIR.mkdir(parents=True, exist_ok=True)
+settings.DATA_DIR.mkdir(parents=True, exist_ok=True)

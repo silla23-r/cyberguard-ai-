@@ -13,6 +13,7 @@ from config import settings
 from api.routes import router as api_router
 from api.websocket import router as ws_router
 from api.whatsapp_routes import router as whatsapp_router
+from api.guardian_routes import router as guardian_router
 from api.security_middleware import SecurityRateLimitMiddleware
 
 # Configure logging
@@ -45,6 +46,7 @@ app.add_middleware(
 app.include_router(api_router)
 app.include_router(ws_router)
 app.include_router(whatsapp_router)
+app.include_router(guardian_router)
 
 # Mount Static Folders
 app.mount("/static", StaticFiles(directory=str(settings.STATIC_DIR)), name="static")

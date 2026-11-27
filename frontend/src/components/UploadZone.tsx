@@ -3,6 +3,7 @@
 import React, { useState, useRef } from "react";
 import { Image as ImageIcon, Mic, FileText, UploadCloud, FileCheck, Scan, Loader2, MessageCircle, Send, ShieldAlert, ShieldCheck, UserX, Package } from "lucide-react";
 import { simulateWhatsAppMessage, blockWhatsAppFraudster } from "@/lib/api";
+import { getOrCreateDeviceId } from "@/lib/guardianPush";
 import { AnalysisResponse, UploadMetadata, UploadModality } from "@/lib/types";
 import { getTranslation } from "@/lib/translations";
 
@@ -122,6 +123,8 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
     if (apkFile) formData.append("apk_file", apkFile);
     if (textInput.trim()) formData.append("text", textInput.trim());
     formData.append("language", selectedLang);
+    const deviceId = getOrCreateDeviceId();
+    if (deviceId) formData.append("device_id", deviceId);
 
     const attachedNames: string[] = [];
     if (imageFile) attachedNames.push(imageFile.name);
@@ -165,7 +168,11 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ onAnalyze, isLoading, se
     setIsBlocked(false);
     setWaSending(true);
     try {
-      const res = await simulateWhatsAppMessage(waInput.trim(), selectedLang);
+      const res = await simulateWhatsAppMessage(
+        waInput.trim(),
+        selectedLang,
+        getOrCreateDeviceId()
+      );
       const isDanger = (res.verdict?.risk_score || 0) >= 40 || res.verdict?.severity === "DANGER";
       setWaChat({
         userText: waInput.trim(),

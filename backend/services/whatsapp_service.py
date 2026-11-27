@@ -115,7 +115,8 @@ async def process_whatsapp_message(
     incoming_text: str = "",
     media_url: Optional[str] = None,
     media_content_type: Optional[str] = None,
-    user_language: str = "en"
+    user_language: str = "en",
+    device_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Unified processor for WhatsApp messages.
@@ -158,7 +159,8 @@ async def process_whatsapp_message(
         apk_bytes=apk_bytes,
         apk_filename=apk_filename,
         raw_text=incoming_text or "",
-        user_language=user_language
+        user_language=user_language,
+        device_id=device_id
     ):
         if event["type"] == "step":
             steps.append(event["step"])

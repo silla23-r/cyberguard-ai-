@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import List, Dict, Any
 
 from config import settings
+from services.guardian_store import purge_expired_guardian_records
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +49,11 @@ def purge_expired_artifacts(
         except Exception as e:
             logger.error(f"Error purging directory {dir_path}: {e}")
 
+    purged_guardian = purge_expired_guardian_records(max_age_hours=int(max_age_seconds / 3600))
+
     return {
         "purged_files_count": purged_files,
+        "purged_guardian_records": purged_guardian,
         "bytes_reclaimed": bytes_reclaimed,
         "retention_window_hours": max_age_seconds / 3600,
         "status": "success"

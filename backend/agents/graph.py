@@ -2,6 +2,7 @@
 LangGraph Multi-Agent Orchestration Graph for CyberGuard AI.
 Coordinates Vision, Audio, Threat Intelligence, Scoring, and Redress agents.
 """
+import asyncio
 from datetime import datetime
 import logging
 from typing import AsyncGenerator, Dict, Any, Optional
@@ -22,6 +23,7 @@ from services.tts_service import generate_voice_advisory
 from services.pii_sanitizer import sanitize_pii
 from services.guardrails_service import inspect_adversarial_injection
 from services.evidence_ledger import compute_evidence_hash, register_evidence_record
+from services.guardian_notifier import dispatch_guardian_alert
 
 from tools.url_analyzer import resolve_redirect_chain, extract_urls_from_text
 from tools.whois_lookup import lookup_domain_age
@@ -51,7 +53,8 @@ async def run_cyberguard_pipeline(
     apk_bytes: Optional[bytes] = None,
     apk_filename: str = "uploaded_app.apk",
     raw_text: str = "",
-    user_language: str = "en"
+    user_language: str = "en",
+    device_id: Optional[str] = None
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """
     Executes the multi-agent graph, yielding live AgentStep updates
@@ -60,6 +63,7 @@ async def run_cyberguard_pipeline(
     state: AgentState = {
         "session_id": session_id,
         "user_language": user_language,
+        "device_id": device_id,
         "image_bytes": image_bytes,
         "audio_bytes": audio_bytes,
         "audio_filename": audio_filename,
@@ -264,6 +268,11 @@ async def run_cyberguard_pipeline(
     state["steps"].append(step5)
     yield {"type": "step", "step": step5}
 
+    # Deduplicate remote access tools before scoring
+    state["evidence"].remote_access_tools_detected = list(
+        dict.fromkeys(state["evidence"].remote_access_tools_detected)
+    )
+
     verdict = calculate_verdict(
         state["evidence"],
         state["threat_intel"],
@@ -281,11 +290,6 @@ async def run_cyberguard_pipeline(
             0,
             f"CRITICAL ADVERSARIAL ALERT: Prompt injection attempt detected ({patterns_str}). AI security override blocked tampering."
         )
-
-    # Deduplicate remote access tools before scoring
-    state["evidence"].remote_access_tools_detected = list(
-        dict.fromkeys(state["evidence"].remote_access_tools_detected)
-    )
 
     # Compute Cryptographic SHA-256 Chain-of-Custody Seal
     apk_sha = state["evidence"].apk_analysis.sha256_hash if state["evidence"].apk_analysis else ""
@@ -318,6 +322,26 @@ async def run_cyberguard_pipeline(
             "remote_tools": state["evidence"].remote_access_tools_detected,
         }
     )
+
+    # Non-blocking real-time Guardian Alert dispatch (fires immediately before PDF/TTS generation)
+    if device_id:
+        modality_used = "apk" if apk_bytes else ("image" if image_bytes else ("audio" if audio_bytes else "text"))
+        expected_pdf_url = f"/api/reports/CyberGuard_Report_{session_id}.pdf"
+        alert_coro = dispatch_guardian_alert(
+            device_id=device_id,
+            session_id=session_id,
+            raw_unredacted_text=raw_text or state["evidence"].raw_text or "",
+            evidence=state["evidence"],
+            verdict=verdict,
+            coercion=state["coercion"],
+            modality=modality_used,
+            report_pdf_url=expected_pdf_url,
+        )
+        try:
+            running_loop = asyncio.get_running_loop()
+            running_loop.create_task(alert_coro)
+        except RuntimeError:
+            alert_coro.close()
 
     state["verdict"] = verdict
     step5.status = "completed"

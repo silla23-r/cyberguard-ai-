@@ -73,7 +73,8 @@ export interface WhatsAppSimulateResponse {
 
 export async function simulateWhatsAppMessage(
   message: string,
-  language: string = "en"
+  language: string = "en",
+  deviceId?: string
 ): Promise<WhatsAppSimulateResponse> {
   const rawBackend = process.env.NEXT_PUBLIC_BACKEND_URL;
   const backendBase = rawBackend ? rawBackend.replace(/\/+$/, "") : "";
@@ -88,6 +89,7 @@ export async function simulateWhatsAppMessage(
         sender: "whatsapp:+919876543210",
         message,
         language,
+        device_id: deviceId || undefined,
       }),
     });
   } catch (netErr: unknown) {
